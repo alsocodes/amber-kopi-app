@@ -51,7 +51,7 @@ interceptRequest(req => {
 onResponseError(err => {
   if (
     [401, 403].includes(err.status) ||
-    err.message.includes('Invalid business')
+    err?.message?.includes('Invalid business')
   ) {
     store.dispatch(logout());
   }

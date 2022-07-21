@@ -1,5 +1,6 @@
 import {createAction, createAsyncThunk} from '@reduxjs/toolkit';
 import api, {getImageUri} from '../../services/api';
+import axios from 'axios';
 
 export const setProductLoading = createAction('SET_PRODUCT_LOADING');
 
@@ -13,7 +14,7 @@ export const fetchAllProducts = createAsyncThunk(
 
     try {
       const {result} = await api.get('/products');
-      console.log('result products', result);
+      // console.log('result products', result);
       return result;
     } catch (err) {
       console.log(err);
@@ -25,7 +26,7 @@ export const fetchAllProducts = createAsyncThunk(
 
 export const fetchAllCatProducts = createAsyncThunk(
   'product/fetchAllCatProducts',
-  async (category, {dispatch, getState}) => {
+  async (_, {dispatch, getState}) => {
     dispatch(setProductLoading(true));
     setTimeout(() => {
       dispatch(setProductLoading(false));
@@ -33,10 +34,11 @@ export const fetchAllCatProducts = createAsyncThunk(
 
     try {
       const {result} = await api.get('/products/category');
-      console.log('result category', result);
+      // const result = axios.get('https://eipiai.smpn33-sby.sch.id/');
+      // console.log('result category', result);
       return result;
     } catch (err) {
-      console.log(err);
+      console.log(err.message);
     }
 
     return [];

@@ -32,20 +32,25 @@ import {
   IL_Greentea_PNG,
   IL_Tomato_PNG,
 } from '../../res';
-import {fetchAllCatProducts} from '../../store/actions/product';
+import {
+  fetchAllCatProducts,
+  fetchAllProducts,
+} from '../../store/actions/productActions';
+import {getImageUri} from '../../services/api';
 
 const Home = ({navigation}) => {
+  const {catProducts, products} = useSelector(state => state.product.product);
   const isDarkMode = useColorScheme() === 'dark';
   const dispatch = useDispatch();
   useEffect(() => {
+    console.log('triggered');
     dispatch(fetchAllCatProducts());
-  }, []);
-
-  const {catProducts, products} = useSelector(state => state.product.product);
+    dispatch(fetchAllProducts());
+  }, [dispatch]);
 
   useEffect(() => {
-    console.log('catProducts', catProducts);
-  }, [catProducts]);
+    console.log('catProducts', products);
+  }, [products]);
 
   return (
     <SafeAreaView style={styles.flex1}>
@@ -69,26 +74,16 @@ const Home = ({navigation}) => {
               horizontal
               showsHorizontalScrollIndicator={false}
               style={styles.scrollViewCategories}>
-              <BoxItemCategories
-                color="rgba(169, 178, 169, 0.5)"
-                text="Jawa"
-                onPress={() => navigation.navigate('Categories', 'Jawa')}
-              />
-              <BoxItemCategories
-                color="rgba(169, 178, 169, 0.5)"
-                text="Robusta"
-                onPress={() => navigation.navigate('Categories', 'Robusta')}
-              />
-              <BoxItemCategories
-                color="rgba(169, 178, 169, 0.5)"
-                text="Arabica"
-                onPress={() => navigation.navigate('Categories', 'America')}
-              />
-              <BoxItemCategories
-                color="rgba(169, 178, 169, 0.5)"
-                text="Mix"
-                onPress={() => navigation.navigate('Categories', 'Mix')}
-              />
+              {catProducts?.map(item => {
+                return (
+                  <BoxItemCategories
+                    key={item.id}
+                    color="rgba(169, 178, 169, 0.5)"
+                    text={item.name}
+                    onPress={() => navigation.navigate('Categories', item)}
+                  />
+                );
+              })}
             </ScrollView>
           </View>
           <Gap height={24} />
@@ -101,12 +96,12 @@ const Home = ({navigation}) => {
               </TouchableOpacity>
             </View>
             <View style={styles.sectionBoxTopProduct}>
-              {products?.map((item, index) => {
+              {products?.rows?.map((item, index) => {
                 return (
                   <BoxItemTopProduct
                     key={index}
                     bgColor={item.bgColor}
-                    icon={item.image}
+                    icon={getImageUri(item?.product?.image)}
                     text={item.title}
                     price={item.price}
                     onPress={() => navigation.navigate('Detail', item)}
@@ -164,5 +159,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
+    gap: 10,
+
+    // paddingHorizontal: 20,
   },
 });

@@ -32,10 +32,10 @@ export default BoxItemTopProduct;
 const styles = StyleSheet.create({
   container: bgColor => ({
     height: 260,
-    width: '40%',
+    width: '43%',
     backgroundColor: colors.white,
     borderRadius: 12,
-    marginHorizontal: 16,
+    marginHorizontal: 10,
     marginVertical: 10,
     overflow: 'hidden',
   }),

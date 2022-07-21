@@ -1,3 +1,5 @@
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {HStack, IconButton, Input, Select, Box} from 'native-base';
 import React, {useState} from 'react';
 import {
   Image,
@@ -23,6 +25,13 @@ import {
   IL_Greentea_PNG,
   IL_Tomato_PNG,
 } from '../../res';
+import {getImageUri} from '../../services/api';
+import {
+  // faChevronDown,
+  faMinus,
+  faPlus,
+  // faStar,
+} from '@fortawesome/free-solid-svg-icons';
 
 const Detail = ({route, navigation}) => {
   const dataParams = route.params;
@@ -37,6 +46,17 @@ const Detail = ({route, navigation}) => {
   };
 
   const [modalVisible, setModalVisible] = useState(true);
+
+  const [qty, setQty] = useState(1);
+  const updateQty = value => {
+    if (value < 0 && qty === 1) return;
+    setQty(parseInt(qty, 10) + value);
+  };
+
+  const onQtyChange = value => {
+    if (parseInt(value, 10) < 1) setQty(1);
+    else setQty(value);
+  };
 
   const addToCartPress = () => {
     Alert.alert('Add to cart', 'Produk berhasil ditambahkan ke keranjang', [
@@ -59,7 +79,10 @@ const Detail = ({route, navigation}) => {
           <Header onPress={() => navigation.goBack()} />
           {/* image */}
           <View style={styles.wrapperImg}>
-            <Image source={dataParams.image} style={styles.image} />
+            <Image
+              source={getImageUri(dataParams.product?.image)}
+              style={styles.image}
+            />
           </View>
           {/* content */}
           <View style={styles.content}>
@@ -67,7 +90,6 @@ const Detail = ({route, navigation}) => {
             <View style={styles.wrapperTopContent}>
               <View style={styles.rowTopContent}>
                 <Text style={styles.name}>{dataParams.title}</Text>
-                <Counter onValueChange={onCounterChange} />
               </View>
               <Text style={styles.price}>
                 Rp{formatNumber(dataParams.price)} / {dataParams.weight / 1000}{' '}
@@ -75,8 +97,8 @@ const Detail = ({route, navigation}) => {
               </Text>
             </View>
             {/* description */}
-            <Text style={styles.excerpt}>{dataParams.excerpt}</Text>
-            <Text style={styles.desc}>{dataParams.description}</Text>
+            <Text style={styles.excerpt}>{dataParams.product?.excerpt}</Text>
+            <Text style={styles.desc}>{dataParams.product?.description}</Text>
             {/* related items */}
             <View style={styles.wrapperRelatedItems}>
               <Text style={styles.titleRelatedItems}>Related Items</Text>
@@ -101,15 +123,78 @@ const Detail = ({route, navigation}) => {
           </View>
         </View>
       </ScrollView>
-      <View style={{margin: 8}}>
-        <Button text="Add To Cart" onPress={addToCartPress} />
+      <View style={styles.bottomBar}>
         {/* <Button
-          // onPress={onPressLearnMore}
-          color={colors.primary}
-          title="Add to cart"
-          style={{padding: 20}}
-          padding="10"
+          style={styles.btnAtc}
+          text="Add To Cart"
+          onPress={addToCartPress}
         /> */}
+        {/* <Counter onValueChange={onCounterChange} /> */}
+        <HStack space={3} alignItems="center" justifyContent="center">
+          <Box flex={1} pt={2}>
+            <HStack space={1}>
+              <Input
+                placeholder="0"
+                value={`${qty}`}
+                onChangeText={q => onQtyChange(q)}
+                px={2}
+                size="md"
+                height={34}
+                flex={1}
+                borderColor={colors.grey}
+                InputRightElement={<Text pr={10}>Pcs </Text>}
+              />
+              <IconButton
+                variant="outline"
+                color={colors.grey}
+                borderColor={colors.grey}
+                alignItems="center"
+                justifyContent="center"
+                minWidth={8}
+                _icon={{color: colors.grey}}
+                icon={<FontAwesomeIcon icon={faPlus} size={12} />}
+                onPress={() => updateQty(1)}
+              />
+              <IconButton
+                variant="outline"
+                color={colors.grey}
+                borderColor={colors.grey}
+                alignItems="center"
+                justifyContent="center"
+                minWidth={8}
+                _icon={{color: colors.grey}}
+                icon={<FontAwesomeIcon icon={faMinus} size={12} />}
+                onPress={() => updateQty(-1)}
+              />
+            </HStack>
+          </Box>
+
+          <Box flex={1}>
+            <Select
+              // flex={1}
+              // selectedValue={service}
+              // minWidth="140"
+              borderColor={colors.grey}
+              height={36}
+              accessibilityLabel="Pilih Jenis"
+              placeholder="Pilih Jenis"
+              _selectedItem={{
+                bg: 'teal.600',
+                // endIcon: <CheckIcon size="5" />,
+              }}
+              mt={1}
+              // onValueChange={itemValue => setService(itemValue)}
+            >
+              <Select.Item label="Roast Bean" value="roastbean" />
+              <Select.Item label="Bubuk" value="bubuk" />
+            </Select>
+          </Box>
+          <Box flex={1} pt={2}>
+            <TouchableOpacity style={styles.btnAtc}>
+              <Text style={styles.btnAtcText}>Keranjang</Text>
+            </TouchableOpacity>
+          </Box>
+        </HStack>
       </View>
       {/* <Modal
         animationType="slide"
@@ -186,17 +271,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    height: 350,
+    // height: 350,
     width: '100%',
-    resizeMode: 'cover',
+    aspectRatio: 1600 / 1066,
+    resizeMode: 'contain',
   },
   content: {
     width: '100%',
     height: '100%',
     backgroundColor: colors.white,
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
-    marginTop: 30,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    marginTop: -20,
     paddingTop: 34,
   },
   wrapperTopContent: {
@@ -241,5 +327,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 20,
     paddingLeft: 20,
+  },
+
+  bottomBar: {
+    paddingHorizontal: 10,
+    paddingTop: 6,
+    paddingBottom: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  btnAtc: {
+    backgroundColor: colors.primary,
+    height: 37,
+    width: 150,
+    paddingHorizontal: 10,
+    borderRadius: 6,
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  btnAtcText: {
+    color: colors.white,
+    fontSize: 16,
+    fontFamily: fonts.Medium,
+    color: colors.white,
+    textAlign: 'center',
   },
 });

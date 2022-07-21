@@ -9,7 +9,8 @@ const fetchAllProducts = (state, {payload}) => {
 };
 
 const fetchAllCatProducts = (state, {payload}) => {
-  state.library.catProducts = payload || [];
+  console.log('i am here');
+  state.product.catProducts = payload || [];
 };
 
 /**

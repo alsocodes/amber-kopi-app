@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import reducers from '../reducers/auth';
+import reducers from '../reducers/product';
 
 /** States */
 const initialState = {
@@ -11,10 +11,10 @@ const initialState = {
 };
 
 /** Slice */
-const authSlice = createSlice({
+const productSlice = createSlice({
   name: 'product',
   initialState,
   extraReducers: reducers,
 });
 
-export default authSlice;
+export default productSlice;

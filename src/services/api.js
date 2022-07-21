@@ -2,8 +2,11 @@ import axios from 'axios';
 import Config from 'react-native-config';
 
 // RestAPI Base URL
-const BASE_URL = Config.RESTAPI_BASE_URL;
+// Todo : ini undefined, sementara di hard code
+// const BASE_URL = Config.RESTAPI_BASE_URL;
 
+const BASE_URL = 'https://e57f-182-1-90-109.ap.ngrok.io';
+console.log('BASE_URL', BASE_URL);
 const ENABLE_DEBUG = false; // true;
 
 // Create HTTP client
@@ -34,7 +37,7 @@ export const onResponseError = fn => {
 // Intercept API response errors
 api.interceptors.response.use(
   res => {
-    ENABLE_DEBUG && console.log('DEBUG RESPONSE:', JSON.stringify(res.data));
+    ENABLE_DEBUG && console.log('DEBUG RESPONSEx:', JSON.stringify(res));
     return res.data;
   },
   async error => {
@@ -59,6 +62,7 @@ api.interceptors.response.use(
 
 class APIError extends Error {
   constructor(message, status = 400) {
+    console.log('message', message);
     const msg = message || `API Error! code: ${status}`;
     super(msg);
     this.status = status;

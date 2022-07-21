@@ -12,6 +12,8 @@ target 'RNUI_GroceryApp' do
     :hermes_enabled => false
   )
 
+  pod 'react-native-config', :path => '../node_modules/react-native-config'
+
   target 'RNUI_GroceryAppTests' do
     inherit! :complete
     # Pods for testing

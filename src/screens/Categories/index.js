@@ -30,7 +30,7 @@ const Categories = ({route, navigation}) => {
         {/* header */}
         <Header back cart onPress={() => navigation.goBack()} />
         <View style={styles.wrapperTittle}>
-          <Text style={styles.tittle}>{route.params}</Text>
+          <Text style={styles.tittle}>{route.params?.name}</Text>
         </View>
         <Gap height={10} />
         {/* Content */}
