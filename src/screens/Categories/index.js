@@ -44,6 +44,7 @@ const Categories = ({route, navigation}) => {
                   icon={item.image}
                   text={item.title}
                   price={item.price}
+                  index={index}
                   onPress={() => navigation.navigate('Detail', item)}
                 />
               );
@@ -60,6 +61,7 @@ export default Categories;
 const styles = StyleSheet.create({
   flex1: {
     flex: 1,
+    backgroundColor: colors.white,
   },
   wrapperTittle: {
     paddingHorizontal: 20,
@@ -74,5 +76,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
+    marginHorizontal: 10,
   },
 });

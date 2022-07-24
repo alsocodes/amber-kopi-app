@@ -9,7 +9,6 @@ const fetchAllProducts = (state, {payload}) => {
 };
 
 const fetchAllCatProducts = (state, {payload}) => {
-  console.log('i am here');
   state.product.catProducts = payload || [];
 };
 

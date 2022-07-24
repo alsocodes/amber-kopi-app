@@ -4,9 +4,11 @@ import {formatNumber} from '../../../helper/utils';
 // import {Gap} from '../..';
 import {colors, fonts, IC_Love} from '../../../res';
 
-const BoxItemTopProduct = ({bgColor, icon, text, price, onPress}) => {
+const BoxItemTopProduct = ({bgColor, icon, text, price, onPress, index}) => {
   return (
-    <TouchableOpacity style={styles.container(bgColor)} onPress={onPress}>
+    <TouchableOpacity
+      style={styles.container(bgColor, index)}
+      onPress={onPress}>
       <View style={{top: -40}}>
         <View>
           <Image source={icon} style={styles.image} />
@@ -18,9 +20,9 @@ const BoxItemTopProduct = ({bgColor, icon, text, price, onPress}) => {
         {/* <Gap height={20} /> */}
         <View style={styles.price}>
           <Text style={styles.wrapperButtom}>Rp{formatNumber(price)}</Text>
-          <TouchableOpacity>
+          {/* <TouchableOpacity>
             <IC_Love />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
     </TouchableOpacity>
@@ -30,14 +32,23 @@ const BoxItemTopProduct = ({bgColor, icon, text, price, onPress}) => {
 export default BoxItemTopProduct;
 
 const styles = StyleSheet.create({
-  container: bgColor => ({
+  container: (bgColor, index) => ({
     height: 260,
-    width: '43%',
+    width: '48%',
     backgroundColor: colors.white,
     borderRadius: 12,
-    marginHorizontal: 10,
     marginVertical: 10,
+    marginRight: index % 2 === 0 ? '2%' : 0,
+    marginLeft: index % 2 !== 0 ? '2%' : 0,
     overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 1,
   }),
   text: {
     paddingHorizontal: 8,
@@ -48,9 +59,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
+    fontSize: 14,
   },
   wrapperButtom: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: fonts.Medium,
   },
   image: {

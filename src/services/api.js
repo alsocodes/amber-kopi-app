@@ -48,13 +48,11 @@ api.interceptors.response.use(
         error.response.status,
         JSON.stringify(error.response.data),
       );
-
     if (error.response) {
       const {data, status} = error.response;
       onErrorCallback.forEach(cb => cb({message: data?.message, status}));
       throw new APIError(data?.message, status);
     }
-
     const err = error?.message || 'Network error!';
     throw new APIError(err);
   },
@@ -62,7 +60,7 @@ api.interceptors.response.use(
 
 class APIError extends Error {
   constructor(message, status = 400) {
-    console.log('message', message);
+    console.log('messagex', message);
     const msg = message || `API Error! code: ${status}`;
     super(msg);
     this.status = status;

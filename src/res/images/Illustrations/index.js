@@ -9,6 +9,7 @@ import IL_RedOnion from './il_redonion.png';
 import IL_Brokoli from './il_brokoli.png';
 import Logo_Amber from './logo-amber.png';
 import logo_amber_200 from './logo_amber_200.png';
+import logoAmberColorSm from './logo-color-sm.png';
 
 export {
   IL_GetStarted_PNG,
@@ -22,4 +23,5 @@ export {
   IL_Brokoli,
   Logo_Amber,
   logo_amber_200,
+  logoAmberColorSm,
 };

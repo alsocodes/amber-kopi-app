@@ -1,6 +1,15 @@
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {HStack, IconButton, Input, Select, Box} from 'native-base';
-import React, {useState} from 'react';
+import {
+  HStack,
+  IconButton,
+  Input,
+  Select,
+  Box,
+  Modal,
+  Button,
+  useToast,
+} from 'native-base';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   SafeAreaView,
@@ -11,43 +20,29 @@ import {
   TouchableOpacity,
   useColorScheme,
   View,
-  Modal,
   Alert,
 } from 'react-native';
-import {BoxRelatedItems, Counter, Button, Gap, Header} from '../../components';
+import {BoxRelatedItems, Counter, Gap, Header} from '../../components';
 import {formatNumber} from '../../helper/utils';
 import {products} from '../../products';
-import {
-  colors,
-  fonts,
-  IL_Cauliflawer_PNG,
-  IL_Grapes_PNG,
-  IL_Greentea_PNG,
-  IL_Tomato_PNG,
-} from '../../res';
+import {colors, fonts} from '../../res';
 import {getImageUri} from '../../services/api';
-import {
-  // faChevronDown,
-  faMinus,
-  faPlus,
-  // faStar,
-} from '@fortawesome/free-solid-svg-icons';
+import {faMinus, faPlus} from '@fortawesome/free-solid-svg-icons';
+import {useDispatch, useSelector} from 'react-redux';
+import {createCart, resetActionResult} from '../../store/actions/saleActions';
+import {ToastError} from '../../components/atoms/Toast';
 
 const Detail = ({route, navigation}) => {
+  const {actionResult, isLoading} = useSelector(state => state.sale);
   const dataParams = route.params;
   const bgColor = route.params.bgColor;
   const isDarkMode = useColorScheme() === 'dark';
-  const [totalItem, setTotalItem] = useState(1);
-
   const dataRelatedItems = [...products].filter((a, i) => i < 3);
 
-  const onCounterChange = value => {
-    setTotalItem(value);
-  };
-
-  const [modalVisible, setModalVisible] = useState(true);
-
+  const [showModal, setShowModal] = useState(false);
   const [qty, setQty] = useState(1);
+  const [inType, setInType] = useState('');
+  const [buttonDisabled, setButtonDisabled] = useState(false);
   const updateQty = value => {
     if (value < 0 && qty === 1) return;
     setQty(parseInt(qty, 10) + value);
@@ -58,16 +53,32 @@ const Detail = ({route, navigation}) => {
     else setQty(value);
   };
 
-  const addToCartPress = () => {
-    Alert.alert('Add to cart', 'Produk berhasil ditambahkan ke keranjang', [
-      {
-        text: 'Tambahkan lainya',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
-      },
-      {text: 'Lihat Keranjang', onPress: () => navigation.navigate('Cart')},
-    ]);
+  useEffect(() => {
+    setButtonDisabled(qty < 1 || inType === '');
+  }, [qty, inType]);
+
+  const dispatch = useDispatch();
+  const toast = useToast();
+  const toastError = msg => {
+    toast.show({
+      title: msg,
+      placement: 'bottom',
+      bgColor: 'red.600',
+    });
   };
+  const onAddToCart = () => {
+    if (inType === '') return toastError('Pilih Jenis Roast Bean / Bubuk');
+    const params = {
+      variantId: dataParams?.id,
+      inType: inType,
+      qty: qty,
+    };
+    dispatch(createCart(params));
+  };
+
+  useEffect(() => {
+    if (actionResult) setShowModal(true);
+  }, [actionResult]);
 
   return (
     <SafeAreaView style={styles.flex1(bgColor)}>
@@ -124,25 +135,30 @@ const Detail = ({route, navigation}) => {
         </View>
       </ScrollView>
       <View style={styles.bottomBar}>
-        {/* <Button
-          style={styles.btnAtc}
-          text="Add To Cart"
-          onPress={addToCartPress}
-        /> */}
-        {/* <Counter onValueChange={onCounterChange} /> */}
         <HStack space={3} alignItems="center" justifyContent="center">
           <Box flex={1} pt={2}>
             <HStack space={1}>
+              <IconButton
+                variant="outline"
+                color={colors.grey}
+                borderColor={colors.grey}
+                alignItems="center"
+                justifyContent="center"
+                minWidth={8}
+                _icon={{color: colors.grey}}
+                icon={<FontAwesomeIcon icon={faMinus} size={12} />}
+                onPress={() => updateQty(-1)}
+              />
               <Input
                 placeholder="0"
                 value={`${qty}`}
                 onChangeText={q => onQtyChange(q)}
                 px={2}
                 size="md"
-                height={34}
+                height={38}
                 flex={1}
                 borderColor={colors.grey}
-                InputRightElement={<Text pr={10}>Pcs </Text>}
+                // InputRightElement={<Text pr={10}>Pcs </Text>}
               />
               <IconButton
                 variant="outline"
@@ -155,62 +171,82 @@ const Detail = ({route, navigation}) => {
                 icon={<FontAwesomeIcon icon={faPlus} size={12} />}
                 onPress={() => updateQty(1)}
               />
-              <IconButton
-                variant="outline"
-                color={colors.grey}
-                borderColor={colors.grey}
-                alignItems="center"
-                justifyContent="center"
-                minWidth={8}
-                _icon={{color: colors.grey}}
-                icon={<FontAwesomeIcon icon={faMinus} size={12} />}
-                onPress={() => updateQty(-1)}
-              />
             </HStack>
           </Box>
 
           <Box flex={1}>
             <Select
-              // flex={1}
-              // selectedValue={service}
-              // minWidth="140"
               borderColor={colors.grey}
-              height={36}
+              height={39}
               accessibilityLabel="Pilih Jenis"
               placeholder="Pilih Jenis"
               _selectedItem={{
                 bg: 'teal.600',
-                // endIcon: <CheckIcon size="5" />,
               }}
               mt={1}
-              // onValueChange={itemValue => setService(itemValue)}
-            >
+              onValueChange={itemValue => setInType(itemValue)}>
               <Select.Item label="Roast Bean" value="roastbean" />
               <Select.Item label="Bubuk" value="bubuk" />
             </Select>
           </Box>
           <Box flex={1} pt={2}>
-            <TouchableOpacity style={styles.btnAtc}>
-              <Text style={styles.btnAtcText}>Keranjang</Text>
-            </TouchableOpacity>
+            <Button
+              // isLoading={isLoading}
+              borderRadius={20}
+              // disabled={buttonDisabled}
+              variant="solid"
+              colorScheme={'emerald'}
+              onPress={() => {
+                onAddToCart();
+              }}>
+              Keranjang
+            </Button>
           </Box>
         </HStack>
       </View>
-      {/* <Modal
-        animationType="slide"
-        transparent={false}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Hello World!</Text>
-      
-          </View>
-        </View>
-      </Modal> */}
+      <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+        <Modal.Content maxWidth="400px">
+          <Modal.CloseButton />
+          {/* <Modal.Header>Contact Us</Modal.Header> */}
+          <Modal.Body>
+            <Text
+              style={{
+                fontSize: 16,
+                marginTop: 40,
+                marginBottom: 20,
+                alignSelf: 'center',
+              }}>
+              Item berhasil ditambahkan ke keranjang
+            </Text>
+          </Modal.Body>
+          <HStack space={3} justifyContent="flex-end" py={4} px={4}>
+            <Button.Group space={2}>
+              <Button
+                borderRadius={20}
+                variant="ghost"
+                colorScheme="blueGray"
+                onPress={() => {
+                  dispatch(resetActionResult());
+                  setShowModal(false);
+                }}>
+                Tambah lainnya
+              </Button>
+              <Button
+                borderRadius={20}
+                variant="solid"
+                colorScheme={'emerald'}
+                onPress={() => {
+                  dispatch(resetActionResult());
+                  navigation.navigate('Cart');
+                }}>
+                Lihat Keranjang
+              </Button>
+            </Button.Group>
+          </HStack>
+          {/* <Modal.Footer>
+          </Modal.Footer> */}
+        </Modal.Content>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -337,6 +373,9 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     alignItems: 'center',
+    borderColor: colors.lightGrey,
+    borderTopWidth: 1,
+    backgroundColor: colors.white,
   },
   btnAtc: {
     backgroundColor: colors.primary,

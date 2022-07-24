@@ -15,32 +15,17 @@ export const setOutlet = createAction('AUTH_SET_OUTLET');
  */
 export const login = createAsyncThunk(
   'auth/login',
-  async ({email, password}, {dispatch}) => {
+  async ({emailOrPhone, password}, {dispatch}) => {
     try {
+      // console.log('result login', emailOrPhone);
       // Try auth user
-      const {result} = await api.post('/login', {
-        email: email || 0,
+      const {result} = await api.post('/auth/signin', {
+        emailOrPhone: emailOrPhone || 0,
         password: password || 0,
-        from: 'APP',
       });
 
-      if (!result.access_token || !result.user?.business) {
-        throw new Error('Failed to authenticate user!');
-      }
+      console.log(result);
 
-      // FIX KLUTO
-      // const {accesses} = result.user;
-
-      // if (!accesses.includes('record_invoice_payments')) {
-      //   throw new Error(
-      //     "You don't have permission to log into POS app! permission required: record_invoice_payments",
-      //   );
-      // }
-
-      // Reset shift options
-      // dispatch(optionReset());
-
-      // Store auth token
       return result;
     } catch (err) {
       // Cannot login!

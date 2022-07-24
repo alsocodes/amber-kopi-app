@@ -1,7 +1,7 @@
 import GetStarted from './GetStarted';
 import Home from './Home';
-import Favorite from './Favorite';
-import Notification from './Notification';
 import Profile from './Profile';
+import Notification from './Notification';
+import Cart from './Cart';
 
-export {GetStarted, Home, Favorite, Notification, Profile};
+export {GetStarted, Home, Cart, Notification, Profile};

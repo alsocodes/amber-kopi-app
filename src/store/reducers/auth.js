@@ -7,20 +7,19 @@ const logout = state => {
   state.accessToken = null;
   state.user = null;
   state.loggedIn = false;
-  state.business = null;
   state.outlet = null;
 };
 
 const login = (state, {payload}) => {
   // Set access token
-  const {user, access_token} = payload;
+  const {user, accessToken} = payload;
 
-  state.accessToken = access_token;
+  state.accessToken = accessToken;
   state.user = user;
   state.loggedIn = true;
-  state.business = user.business;
   // state.outlet = user?.outlets[0] || null;
   state.outlet = null;
+  state.loading = false;
 };
 
 const setOutlet = (state, {payload}) => {
@@ -33,4 +32,7 @@ export default {
 
   // Extras
   [actions.login.fulfilled]: login,
+  [actions.login.pending]: (state, {payload}) => {
+    state.loading = true;
+  },
 };

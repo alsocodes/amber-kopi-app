@@ -6,8 +6,8 @@ const initialState = {
   accessToken: null,
   user: null,
   loggedIn: false,
-  business: null,
   outlet: null,
+  loading: false,
 };
 
 /** Slice */

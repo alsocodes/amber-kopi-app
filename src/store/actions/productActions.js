@@ -7,11 +7,7 @@ export const setProductLoading = createAction('SET_PRODUCT_LOADING');
 export const fetchAllProducts = createAsyncThunk(
   'product/fetchAllProducts',
   async (category, {dispatch, getState}) => {
-    dispatch(setProductLoading(true));
-    setTimeout(() => {
-      dispatch(setProductLoading(false));
-    }, 10);
-
+    console.log('fetch products');
     try {
       const {result} = await api.get('/products');
       // console.log('result products', result);
@@ -27,11 +23,7 @@ export const fetchAllProducts = createAsyncThunk(
 export const fetchAllCatProducts = createAsyncThunk(
   'product/fetchAllCatProducts',
   async (_, {dispatch, getState}) => {
-    dispatch(setProductLoading(true));
-    setTimeout(() => {
-      dispatch(setProductLoading(false));
-    }, 10);
-
+    console.log('fetch categories');
     try {
       const {result} = await api.get('/products/category');
       // const result = axios.get('https://eipiai.smpn33-sby.sch.id/');

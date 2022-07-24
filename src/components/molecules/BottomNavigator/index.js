@@ -1,3 +1,4 @@
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {
@@ -14,18 +15,43 @@ import {
   IC_Cart_color,
 } from '../../../res';
 
+import {
+  faHome,
+  faUserAlt,
+  faShoppingBasket,
+} from '@fortawesome/free-solid-svg-icons';
+
 const Icon = ({label, isFocused}) => {
   switch (label) {
     case 'Home':
-      return isFocused ? <IC_Home_color /> : <IC_Home />;
+      return (
+        <FontAwesomeIcon
+          icon={faHome}
+          size={24}
+          color={isFocused ? colors.primary : colors.semiLightGrey}
+        />
+      );
+    // return isFocused ? <IC_Home_color /> : <IC_Home />;
     case 'Cart':
-      return isFocused ? <IC_Cart_color /> : <IC_Cart />;
-    case 'Notification':
-      return isFocused ? <IC_Notification_color /> : <IC_Notification />;
+      // return isFocused ? <IC_Cart_color /> : <IC_Cart />;
+      return (
+        <FontAwesomeIcon
+          icon={faShoppingBasket}
+          size={24}
+          color={isFocused ? colors.primary : colors.semiLightGrey}
+        />
+      );
     case 'Profile':
-      return isFocused ? <IC_Profile_color /> : <IC_Profile />;
+      // return isFocused ? <IC_Profile_color /> : <IC_Profile />;
+      return (
+        <FontAwesomeIcon
+          icon={faUserAlt}
+          size={24}
+          color={isFocused ? colors.primary : colors.semiLightGrey}
+        />
+      );
     default:
-      return <IC_Home_color />;
+      return <FontAwesomeIcon icon={faHome} size={24} color={colors.primary} />;
   }
 };
 
@@ -88,10 +114,11 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     backgroundColor: colors.white,
-    paddingTop: 15,
-    paddingBottom: 15,
+    paddingTop: 5,
+    paddingBottom: 5,
     paddingHorizontal: 32,
     justifyContent: 'space-between',
-    // backgroundColor: '#f00f00',
+    borderTopWidth: 1,
+    borderColor: colors.lightGrey,
   },
 });

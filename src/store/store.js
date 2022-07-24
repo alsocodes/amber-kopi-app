@@ -9,7 +9,7 @@ import {logout} from './actions/authActions';
 
 // Configure redux-persist
 const persistConfig = {
-  key: 'kluto',
+  key: 'amberkopi',
   version: 3,
   storage: AsyncStorage,
   // blacklist: ['modals'],

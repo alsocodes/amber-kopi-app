@@ -1,26 +1,18 @@
 import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
-import {Button, Gap} from '../../components';
+import {useSelector} from 'react-redux';
 import {colors, fonts} from '../../res';
-import {IL_GetStarted_PNG, Logo_Amber} from '../../res/images/Illustrations';
+import {Logo_Amber} from '../../res/images/Illustrations';
 
 const GetStarted = ({navigation}) => {
+  const {loggedIn} = useSelector(state => state.auth);
   setTimeout(() => {
-    navigation.replace('MainApp');
+    if (loggedIn) navigation.replace('MainApp');
+    else navigation.replace('Signin');
   }, 2000);
   return (
     <View style={styles.screen}>
       <Image source={Logo_Amber} style={styles.image} />
-      {/* <View style={styles.wrapperSlogan}>
-        <Text style={styles.txtSlogan}>Shop Your Daily </Text>
-        <Text style={styles.txtSlogan}>Necessary</Text>
-      </View>
-      <Gap height={90} />
-    */}
-      {/* <Button
-        onPress={() => navigation.replace('MainApp')}
-        text="Get Started"
-      /> */}
     </View>
   );
 };
@@ -33,7 +25,7 @@ const styles = StyleSheet.create({
     // paddingHorizontal: 20,
     justifyContent: 'center',
     // backgroundColor: '#49111c',
-    backgroundColor: colors.darkGreen,
+    backgroundColor: '#34d399',
     justifyItems: 'center',
   },
   image: {
