@@ -6,6 +6,7 @@ const initialState = {
   isLoading: false,
   actionResult: null,
   addresses: [],
+  profile: null,
 };
 
 /** Slice */

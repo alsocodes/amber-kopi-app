@@ -29,4 +29,41 @@ export default {
     state.addresses = payload;
     state.isLoading = false;
   },
+
+  [actions.deleteAddresses.pending]: (state, {payload}) => {
+    state.isLoading = true;
+  },
+  [actions.deleteAddresses.fulfilled]: (state, {payload}) => {
+    state.isLoading = false;
+    state.actionResult = {
+      type: 'deleteAddress',
+    };
+  },
+  [actions.updateAddresses.pending]: (state, {payload}) => {
+    state.isLoading = true;
+  },
+  [actions.updateAddresses.fulfilled]: (state, {payload}) => {
+    state.isLoading = false;
+    state.actionResult = {
+      type: 'updateAddress',
+    };
+  },
+
+  [actions.fetchProfile.pending]: (state, {payload}) => {
+    state.isLoading = true;
+  },
+  [actions.fetchProfile.fulfilled]: (state, {payload}) => {
+    state.isLoading = false;
+    state.profile = payload;
+  },
+
+  [actions.updateProfile.pending]: (state, {payload}) => {
+    state.isLoading = true;
+  },
+  [actions.updateProfile.fulfilled]: (state, {payload}) => {
+    state.isLoading = false;
+    state.actionResult = {
+      type: 'updateProfile',
+    };
+  },
 };

@@ -1,21 +1,25 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {colors, fonts} from '../../../res';
+import {StyleSheet, TouchableOpacity} from 'react-native';
+import {colors} from '../../../res';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faMugSaucer} from '@fortawesome/free-solid-svg-icons/faMugSaucer';
+// import {faMugSaucer} from '@fortawesome/free-solid-svg-icons/faMugSaucer';
+import {faCoffee} from '@fortawesome/free-solid-svg-icons';
+import {Text, View} from 'native-base';
 
 const BoxItemCategories = ({text, color, icon, onPress}) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      {/* <View style={styles.wrapperImg(color)}>{icon}</View> */}
-      <View style={styles.icon}>
-        <FontAwesomeIcon
-          size={24}
-          icon={faMugSaucer}
-          color={colors.darkGreen}
-        />
+      <View
+        borderWidth={1}
+        borderColor={'gray.200'}
+        borderRadius={8}
+        px={3}
+        py={2}>
+        <FontAwesomeIcon size={24} icon={faCoffee} color={colors.primary} />
       </View>
-      <Text style={styles.text}>{text}</Text>
+      <Text color={'gray.600'} fontSize={16}>
+        {text}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -27,10 +31,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 17,
+    marginTop: 2,
   },
 
   icon: {
-    backgroundColor: colors.lightGrey,
+    backgroundColor: colors.primary,
     padding: 10,
     borderRadius: 5,
   },
@@ -43,10 +48,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,
   }),
-  text: {
-    marginTop: 5,
-    color: colors.darkGreen,
-    fontSize: 14,
-    fontFamily: fonts.SemiBold,
-  },
 });

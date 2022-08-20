@@ -1,39 +1,29 @@
+import {Box, Hidden, Text} from 'native-base';
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {colors, IC_Back, IC_Cart, IC_Drawer} from '../../../res';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {colors} from '../../../res';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faChevronLeft} from '@fortawesome/free-solid-svg-icons';
 
 const Header = ({drawer, back, cart, onPress, title}) => {
-  if (drawer) {
-    return (
-      <View style={styles.wrapperHeader}>
-        <TouchableOpacity onPress={onPress}>
-          <IC_Drawer />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onPress}>
-          <IC_Cart />
-        </TouchableOpacity>
-      </View>
-    );
-  }
-  // if (back && cart) {
-  //   return (
-  //     <View style={styles.wrapperHeader}>
-  //       <TouchableOpacity onPress={onPress}>
-  //         <IC_Back />
-  //       </TouchableOpacity>
-  //       <TouchableOpacity onPress={onPress}>
-  //         <IC_Cart />
-  //       </TouchableOpacity>
-  //     </View>
-  //   );
-  // }
-
   return (
     <View style={styles.wrapperHeader}>
-      <TouchableOpacity onPress={onPress} style={{padding: 10, width: 40}}>
-        <IC_Back />
-      </TouchableOpacity>
-      {title && <Text style={{fontSize: 18, fontWeight: 'bold'}}>{title}</Text>}
+      {back ? (
+        <TouchableOpacity onPress={onPress} style={{padding: 10, width: 40}}>
+          <FontAwesomeIcon icon={faChevronLeft} color={colors.grey} />
+        </TouchableOpacity>
+      ) : (
+        <Box></Box>
+      )}
+      {title && (
+        <Text
+          color={'gray.600'}
+          numberOfLines={1}
+          fontSize={18}
+          fontWeight={'semibold'}>
+          {title}
+        </Text>
+      )}
     </View>
   );
 };

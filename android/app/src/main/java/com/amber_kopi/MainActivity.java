@@ -1,4 +1,4 @@
-package com.amber_kopi;
+package com.amberkopi;
 
 import com.facebook.react.ReactActivity;
 

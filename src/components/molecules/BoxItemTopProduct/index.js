@@ -1,8 +1,8 @@
+import {Text} from 'native-base';
 import React from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {formatNumber} from '../../../helper/utils';
-// import {Gap} from '../..';
-import {colors, fonts, IC_Love} from '../../../res';
+import {colors} from '../../../res';
 
 const BoxItemTopProduct = ({bgColor, icon, text, price, onPress, index}) => {
   return (
@@ -13,16 +13,20 @@ const BoxItemTopProduct = ({bgColor, icon, text, price, onPress, index}) => {
         <View>
           <Image source={icon} style={styles.image} />
           {/* <Gap height={20} /> */}
-          <Text numberOfLines={2} style={styles.text}>
+          <Text
+            numberOfLines={2}
+            fontSize={16}
+            color={'gray.600'}
+            px={2}
+            fontWeight={'semibold'}>
             {text}
           </Text>
         </View>
         {/* <Gap height={20} /> */}
         <View style={styles.price}>
-          <Text style={styles.wrapperButtom}>Rp{formatNumber(price)}</Text>
-          {/* <TouchableOpacity>
-            <IC_Love />
-          </TouchableOpacity> */}
+          <Text fontSize={16} color={'gray.600'}>
+            Rp{formatNumber(price)}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -50,21 +54,13 @@ const styles = StyleSheet.create({
     shadowRadius: 2.22,
     elevation: 1,
   }),
-  text: {
-    paddingHorizontal: 8,
-    fontSize: 16,
-    fontFamily: fonts.Medium,
-  },
   price: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
     fontSize: 14,
   },
-  wrapperButtom: {
-    fontSize: 16,
-    fontFamily: fonts.Medium,
-  },
+
   image: {
     height: 210,
     width: '100%',

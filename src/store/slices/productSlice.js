@@ -7,6 +7,12 @@ const initialState = {
     isLoading: false,
     products: [],
     catProducts: [],
+    banners: [],
+    bannerFetching: false,
+    searches: [],
+    searchFetching: false,
+    relatedProducts: [],
+    productsByCat: [],
   },
 };
 

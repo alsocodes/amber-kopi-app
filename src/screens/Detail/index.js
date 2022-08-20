@@ -8,6 +8,7 @@ import {
   Modal,
   Button,
   useToast,
+  Text,
 } from 'native-base';
 import React, {useEffect, useState} from 'react';
 import {
@@ -16,33 +17,37 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   useColorScheme,
   View,
-  Alert,
 } from 'react-native';
-import {BoxRelatedItems, Counter, Gap, Header} from '../../components';
+import {BoxRelatedItems, Gap, Header} from '../../components';
 import {formatNumber} from '../../helper/utils';
-import {products} from '../../products';
 import {colors, fonts} from '../../res';
 import {getImageUri} from '../../services/api';
 import {faMinus, faPlus} from '@fortawesome/free-solid-svg-icons';
 import {useDispatch, useSelector} from 'react-redux';
 import {createCart, resetActionResult} from '../../store/actions/saleActions';
-import {ToastError} from '../../components/atoms/Toast';
+import {fetchRelatedProducts} from '../../store/actions/productActions';
 
 const Detail = ({route, navigation}) => {
   const {actionResult, isLoading} = useSelector(state => state.sale);
-  const dataParams = route.params;
-  const bgColor = route.params.bgColor;
+  const {relatedProducts} = useSelector(state => state.product.product);
+  const dataParams = route?.params;
+  const bgColor = route?.params?.bgColor;
   const isDarkMode = useColorScheme() === 'dark';
-  const dataRelatedItems = [...products].filter((a, i) => i < 3);
 
   const [showModal, setShowModal] = useState(false);
   const [qty, setQty] = useState(1);
   const [inType, setInType] = useState('');
   const [buttonDisabled, setButtonDisabled] = useState(false);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (dataParams?.id) {
+      dispatch(fetchRelatedProducts(dataParams?.id));
+    }
+  }, [dataParams, dispatch]);
+
   const updateQty = value => {
     if (value < 0 && qty === 1) return;
     setQty(parseInt(qty, 10) + value);
@@ -57,7 +62,6 @@ const Detail = ({route, navigation}) => {
     setButtonDisabled(qty < 1 || inType === '');
   }, [qty, inType]);
 
-  const dispatch = useDispatch();
   const toast = useToast();
   const toastError = msg => {
     toast.show({
@@ -72,65 +76,69 @@ const Detail = ({route, navigation}) => {
       variantId: dataParams?.id,
       inType: inType,
       qty: qty,
+      data: dataParams,
     };
+    // console.log('createCart', params);
     dispatch(createCart(params));
   };
 
   useEffect(() => {
-    if (actionResult) setShowModal(true);
+    if (actionResult?.type === 'addToCart') {
+      console.log(' iam trigged');
+      setShowModal(true);
+      dispatch(resetActionResult());
+    }
   }, [actionResult]);
 
   return (
     <SafeAreaView style={styles.flex1(bgColor)}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <StatusBar barStyle="dark-content" backgroundColor={colors.lightGrey} />
       <ScrollView>
         <View>
-          {/* header */}
-          <Header onPress={() => navigation.goBack()} />
-          {/* image */}
+          <Header
+            onPress={() => navigation.goBack()}
+            back={true}
+            title={dataParams?.title}
+          />
           <View style={styles.wrapperImg}>
             <Image
-              source={getImageUri(dataParams.product?.image)}
+              source={getImageUri(dataParams?.product?.image)}
               style={styles.image}
             />
           </View>
-          {/* content */}
+
           <View style={styles.content}>
-            {/* top content */}
             <View style={styles.wrapperTopContent}>
               <View style={styles.rowTopContent}>
-                <Text style={styles.name}>{dataParams.title}</Text>
+                <Text style={styles.name}>{dataParams?.title}</Text>
               </View>
               <Text style={styles.price}>
-                Rp{formatNumber(dataParams.price)} / {dataParams.weight / 1000}{' '}
-                kg
+                Rp{formatNumber(dataParams?.price)} /{' '}
+                {dataParams?.weight / 1000} kg
               </Text>
             </View>
-            {/* description */}
-            <Text style={styles.excerpt}>{dataParams.product?.excerpt}</Text>
-            <Text style={styles.desc}>{dataParams.product?.description}</Text>
-            {/* related items */}
+            <Text style={styles.excerpt}>{dataParams?.product?.excerpt}</Text>
+            <Text style={styles.desc}>{dataParams?.product?.description}</Text>
             <View style={styles.wrapperRelatedItems}>
               <Text style={styles.titleRelatedItems}>Related Items</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View style={styles.wrapperBoxRelatedItems}>
-                  {dataRelatedItems.map((item, index) => {
+                  {relatedProducts?.map((item, index) => {
                     return (
                       <BoxRelatedItems
                         key={index}
-                        image={item.image}
+                        image={getImageUri(item?.product?.image)}
                         name={item.title}
                         price={item.price}
                         bgColor={item.bgColor}
+                        onPress={() => navigation.navigate('Detail', item)}
                       />
                     );
                   })}
                 </View>
               </ScrollView>
             </View>
-            {/* button add to cart */}
-            <Gap height={50} />
+            {/* <Gap height={50} /> */}
           </View>
         </View>
       </ScrollView>
@@ -158,7 +166,6 @@ const Detail = ({route, navigation}) => {
                 height={38}
                 flex={1}
                 borderColor={colors.grey}
-                // InputRightElement={<Text pr={10}>Pcs </Text>}
               />
               <IconButton
                 variant="outline"
@@ -184,6 +191,7 @@ const Detail = ({route, navigation}) => {
                 bg: 'teal.600',
               }}
               mt={1}
+              selectedValue={inType}
               onValueChange={itemValue => setInType(itemValue)}>
               <Select.Item label="Roast Bean" value="roastbean" />
               <Select.Item label="Bubuk" value="bubuk" />
@@ -207,7 +215,6 @@ const Detail = ({route, navigation}) => {
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
         <Modal.Content maxWidth="400px">
           <Modal.CloseButton />
-          {/* <Modal.Header>Contact Us</Modal.Header> */}
           <Modal.Body>
             <Text
               style={{
@@ -237,14 +244,12 @@ const Detail = ({route, navigation}) => {
                 colorScheme={'emerald'}
                 onPress={() => {
                   dispatch(resetActionResult());
-                  navigation.navigate('Cart');
+                  navigation.replace('Cart');
                 }}>
                 Lihat Keranjang
               </Button>
             </Button.Group>
           </HStack>
-          {/* <Modal.Footer>
-          </Modal.Footer> */}
         </Modal.Content>
       </Modal>
     </SafeAreaView>
@@ -318,7 +323,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    marginTop: -20,
+    marginTop: -15,
     paddingTop: 34,
   },
   wrapperTopContent: {
@@ -349,6 +354,8 @@ const styles = StyleSheet.create({
   },
   desc: {
     paddingHorizontal: 20,
+    lineHeight: 20,
+    fontSize: 15,
   },
   wrapperRelatedItems: {
     marginTop: 25,

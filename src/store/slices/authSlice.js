@@ -8,6 +8,7 @@ const initialState = {
   loggedIn: false,
   outlet: null,
   loading: false,
+  actionResult: null,
 };
 
 /** Slice */

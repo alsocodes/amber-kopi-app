@@ -13,7 +13,7 @@ const persistConfig = {
   version: 3,
   storage: AsyncStorage,
   // blacklist: ['modals'],
-  whitelist: ['auth', 'product'],
+  whitelist: ['auth', 'product', 'account', 'sale'],
   // whitelist: [],
 };
 

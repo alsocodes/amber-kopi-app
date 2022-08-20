@@ -5,7 +5,8 @@ import Config from 'react-native-config';
 // Todo : ini undefined, sementara di hard code
 // const BASE_URL = Config.RESTAPI_BASE_URL;
 
-const BASE_URL = 'https://e57f-182-1-90-109.ap.ngrok.io';
+// const BASE_URL = 'https://012b-182-1-123-86.ap.ngrok.io';
+const BASE_URL = 'https://api.amberkopi.my.id';
 console.log('BASE_URL', BASE_URL);
 const ENABLE_DEBUG = false; // true;
 

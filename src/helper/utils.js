@@ -1,7 +1,9 @@
-import 'react-native-intl';
+// import {Intl} from 'react-native-intl';
 // import 'intl/locale-data/jsonp/en';
+// const Intl = require('react-native-intl');
 
 export const formatNumber = number => {
+  if (number === undefined) return 0;
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   // const text = new Intl.NumberFormat('id-ID', {
   //   style: 'currency',
@@ -104,4 +106,50 @@ export const ucfirst = string => {
 //   return amount;
 // };
 
-export default {formatNumber, clamp, ucfirst};
+const sortMonth = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'Mei',
+  'Jun',
+  'Jul',
+  'Agus',
+  'Sept',
+  'Okt',
+  'Nov',
+  'Des',
+];
+
+const fullMonth = [
+  'Januari',
+  'Februari',
+  'Maret',
+  'April',
+  'Mei',
+  'Juni',
+  'Juli',
+  'Agustus',
+  'September',
+  'Oktober',
+  'November',
+  'Desember',
+];
+
+export const ddMmYy = (date = new Date()) => {
+  const dd = `${date.getDate() < 10 ? '0' : ''}${date.getDate()}`;
+  const month = sortMonth[parseInt(date.getMonth())];
+  const year = date.getFullYear();
+  return `${dd} ${month} ${year}`;
+};
+
+export const ddMmYyHhIi = (date = new Date()) => {
+  const dd = `${date.getDate() < 10 ? '0' : ''}${date.getDate()}`;
+  const month = sortMonth[parseInt(date.getMonth())];
+  const year = date.getFullYear();
+  const hh = `${date.getHours() < 10 ? '0' : ''}${date.getHours()}`;
+  const ii = `${date.getMinutes() < 10 ? '0' : ''}${date.getMinutes()}`;
+  return `${dd} ${month} ${year} ${hh}:${ii}`;
+};
+
+// export default {formatNumber, clamp, ucfirst, ddMmYy};

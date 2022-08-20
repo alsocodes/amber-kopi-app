@@ -15,11 +15,8 @@ import {
   IC_Cart_color,
 } from '../../../res';
 
-import {
-  faHome,
-  faUserAlt,
-  faShoppingBasket,
-} from '@fortawesome/free-solid-svg-icons';
+import {faHome, faUserAlt, faReceipt} from '@fortawesome/free-solid-svg-icons';
+import {Center, HStack, VStack} from 'native-base';
 
 const Icon = ({label, isFocused}) => {
   switch (label) {
@@ -32,16 +29,16 @@ const Icon = ({label, isFocused}) => {
         />
       );
     // return isFocused ? <IC_Home_color /> : <IC_Home />;
-    case 'Cart':
+    case 'Transaksi':
       // return isFocused ? <IC_Cart_color /> : <IC_Cart />;
       return (
         <FontAwesomeIcon
-          icon={faShoppingBasket}
+          icon={faReceipt}
           size={24}
           color={isFocused ? colors.primary : colors.semiLightGrey}
         />
       );
-    case 'Profile':
+    case 'Akun':
       // return isFocused ? <IC_Profile_color /> : <IC_Profile />;
       return (
         <FontAwesomeIcon
@@ -99,8 +96,17 @@ const BottomNavigator = ({state, descriptors, navigation}) => {
             testID={options.tabBarTestID}
             onPress={onPress}
             onLongPress={onLongPress}>
-            <Icon label={label} isFocused={isFocused} />
-            {/* <Text style={{color: isFocused ? '#673ab7' : '#222'}}>{label}</Text> */}
+            <Center>
+              <Icon label={label} isFocused={isFocused} />
+              <Text
+                style={{
+                  color: isFocused ? colors.primary : colors.semiLightGrey,
+                  fontSize: 12,
+                  paddingTop: 2,
+                }}>
+                {label}
+              </Text>
+            </Center>
           </TouchableOpacity>
         );
       })}

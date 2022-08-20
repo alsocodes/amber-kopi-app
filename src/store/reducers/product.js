@@ -19,4 +19,29 @@ export default {
   [actions.setProductLoading]: setProductLoading,
   [actions.fetchAllProducts.fulfilled]: fetchAllProducts,
   [actions.fetchAllCatProducts.fulfilled]: fetchAllCatProducts,
+  [actions.fetchAllBanners.pending]: (state, {payload}) => {
+    state.product.bannerFetching = true;
+  },
+  [actions.fetchAllBanners.fulfilled]: (state, {payload}) => {
+    state.product.bannerFetching = false;
+    state.product.banners = payload;
+  },
+
+  [actions.searchProducts.pending]: (state, {payload}) => {
+    state.product.searchFetching = true;
+  },
+  [actions.searchProducts.fulfilled]: (state, {payload}) => {
+    state.product.searchFetching = false;
+    state.product.searches = payload;
+  },
+
+  [actions.fetchRelatedProducts.fulfilled]: (state, {payload}) => {
+    // state.product.searchFetching = false;
+    state.product.relatedProducts = payload;
+  },
+
+  [actions.fetchAllProductsByCat.fulfilled]: (state, {payload}) => {
+    // state.product.searchFetching = false;
+    state.product.productsByCat = payload;
+  },
 };

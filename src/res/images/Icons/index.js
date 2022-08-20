@@ -11,17 +11,17 @@ import IC_Cart_color from './ic_cart_color.svg';
 import IC_Drawer from './ic_drawer.svg';
 import IC_Like_black from './ic_like_black.svg';
 import IC_Search from './ic_search.svg';
-import IC_Fruits from './ic_fruits.svg';
-import IC_Vegetables from './ic_vegetables.svg';
-import IC_Drinks from './ic_drinks.svg';
-import IC_Bakery from './ic_bakery.svg';
-import IC_Bakery2 from './ic_bakery2.svg';
-import IC_Grapes from './ic_grapes.svg';
 import IC_Love from './ic_love.svg';
-import IC_Tomato from './ic_tomato.svg';
 import IC_Back from './ic_back.svg';
 import IC_Btn_Min from './ic_button_min.svg';
 import IC_Btn_Plus from './ic_button_plus.svg';
+// import IC_Fruits from './ic_fruits.svg';
+// import IC_Vegetables from './ic_vegetables.svg';
+// import IC_Drinks from './ic_drinks.svg';
+// import IC_Bakery from './ic_bakery.svg';
+// import IC_Bakery2 from './ic_bakery2.svg';
+// import IC_Grapes from './ic_grapes.svg';
+// import IC_Tomato from './ic_tomato.svg';
 
 export {
   IC_Favorite,
@@ -36,16 +36,16 @@ export {
   IC_Drawer,
   IC_Like_black,
   IC_Search,
-  IC_Fruits,
-  IC_Vegetables,
-  IC_Drinks,
-  IC_Bakery,
-  IC_Bakery2,
-  IC_Grapes,
   IC_Love,
-  IC_Tomato,
   IC_Back,
   IC_Btn_Min,
   IC_Btn_Plus,
   IC_Cart_color,
+  // IC_Fruits,
+  // IC_Vegetables,
+  // IC_Drinks,
+  // IC_Bakery,
+  // IC_Bakery2,
+  // IC_Grapes,
+  // IC_Tomato,
 };

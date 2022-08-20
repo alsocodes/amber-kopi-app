@@ -2,19 +2,19 @@ import React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {colors} from '../../../res';
 
-const BoxRelatedItems = ({image, name, price, bgColor}) => {
+const BoxRelatedItems = ({image, name, price, bgColor, onPress}) => {
   return (
-    <TouchableOpacity style={styles.container(bgColor)}>
+    <TouchableOpacity style={styles.container(bgColor)} onPress={onPress}>
       <View style={styles.wrapperImage}>
         <Image source={image} style={styles.image} />
       </View>
       <View style={styles.wrapperDetail}>
-        <Text flex="1" numberOfLines={1}>
+        <Text flex="1" numberOfLines={2}>
           {name}
         </Text>
-        <View style={styles.rowDetail}>
-          {/* <Text style={styles.textPrice}>${price}</Text> */}
-        </View>
+        {/* <View style={styles.rowDetail}>
+          <Text style={styles.textPrice}>${price}</Text>
+        </View> */}
       </View>
     </TouchableOpacity>
   );
@@ -33,7 +33,12 @@ const styles = StyleSheet.create({
   }),
   wrapperImage: {justifyContent: 'center', alignItems: 'center', flex: 1},
   image: {height: 70, width: '100%', resizeMode: 'cover'},
-  wrapperDetail: {justifyContent: 'flex-end', padding: 5},
+  wrapperDetail: {
+    justifyContent: 'flex-start',
+    padding: 5,
+    height: 50,
+    bgColor: colors.lightGrey,
+  },
   rowDetail: {
     backgroundColor: colors.white,
     height: 25,

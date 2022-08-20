@@ -38,7 +38,7 @@ export const deleteAddresses = createAsyncThunk(
   'sale/deleteAddresses',
   async (id, {dispatch, getState}) => {
     try {
-      console.log('herex');
+      console.log('update delete', id);
       const {result} = await api.delete(`/addresses/${id}`);
       return result;
     } catch (err) {
@@ -53,7 +53,7 @@ export const updateAddresses = createAsyncThunk(
   'sale/updateAddresses',
   async (data, {dispatch, getState}) => {
     try {
-      console.log('herex');
+      console.log('update address', data);
       const {result} = await api.put(`/addresses/${data.id}`, data);
       return result;
     } catch (err) {
@@ -61,5 +61,33 @@ export const updateAddresses = createAsyncThunk(
     }
 
     return [];
+  },
+);
+
+export const fetchProfile = createAsyncThunk(
+  'sale/fetchProfile',
+  async (data, {dispatch, getState}) => {
+    try {
+      console.log('fetchProfile', data);
+      const {result} = await api.get(`/users/profile`);
+      return result;
+    } catch (err) {
+      console.log(err);
+      return getState().account?.profile;
+    }
+  },
+);
+
+export const updateProfile = createAsyncThunk(
+  'sale/updateProfile',
+  async (data, {dispatch, getState}) => {
+    try {
+      console.log('updateProfile', data);
+      const {result} = await api.put(`/users/profile/${data.id}`, data);
+      return result;
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
   },
 );

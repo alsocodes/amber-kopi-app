@@ -1,7 +1,5 @@
 import {
-  Icon,
   Input,
-  Stack,
   Button,
   HStack,
   Box,
@@ -12,9 +10,10 @@ import {
   Link,
   Image,
   IconButton,
+  Text,
 } from 'native-base';
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Linking} from 'react-native';
 // import {Button, Gap} from '../../components';
 import {colors, fonts} from '../../res';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
@@ -50,26 +49,18 @@ const Signin = ({navigation}) => {
   }, [loggedIn]);
 
   return (
-    <Center w="100%" justifyItems={'center'} h="100%" bg={colors.lightGrey}>
+    <Center w="100%" justifyItems={'center'} h="100%" bg={colors.white}>
       <Box
         safeArea
-        p="8"
-        w="80%"
+        py="6"
+        px="8"
+        w="100%"
         // maxW="350"
         bg={colors.white}
         borderRadius={10}>
         <Center mb={2}>
-          <Image source={logoAmberColorSm} alt="Alternate Text" />
+          <Image source={logoAmberColorSm} alt="Logo" />
         </Center>
-        {/* <Heading
-          size="lg"
-          fontWeight="600"
-          color="coolGray.800"
-          _dark={{
-            color: 'warmGray.50',
-          }}>
-          Selamat datang
-        </Heading> */}
         <Heading
           mt="1"
           _dark={{
@@ -106,10 +97,11 @@ const Signin = ({navigation}) => {
               onChangeText={setPassword}
             />
             <Link
+              onPress={() => navigation.navigate('RequestReset')}
               _text={{
                 fontSize: 'xs',
                 fontWeight: '500',
-                color: 'indigo.500',
+                color: 'emerald.500',
               }}
               alignSelf="flex-end"
               mt="1">
@@ -118,8 +110,10 @@ const Signin = ({navigation}) => {
           </FormControl>
           <Button
             mt="2"
-            // isLoading={loading}
-            colorScheme="primary"
+            isLoading={loading}
+            borderRadius={20}
+            colorScheme="emerald"
+            variant={'solid'}
             onPress={onSignin}
             disabled={buttonDisabled}>
             Masuk
@@ -135,11 +129,13 @@ const Signin = ({navigation}) => {
             </Text>
             <Link
               _text={{
-                color: 'indigo.500',
+                color: 'emerald.500',
                 fontWeight: 'medium',
                 fontSize: 'sm',
               }}
-              onPress={() => navigation.replace('Signup')}>
+              // onPress={() => navigation.navigate('Signup')}>
+              onPress={() => Linking.openURL('https://amberkopi.my.id/signup')}>
+              {' '}
               Daftar
             </Link>
           </HStack>

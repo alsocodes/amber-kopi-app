@@ -7,7 +7,6 @@ const logout = state => {
   state.accessToken = null;
   state.user = null;
   state.loggedIn = false;
-  state.outlet = null;
 };
 
 const login = (state, {payload}) => {
@@ -34,5 +33,34 @@ export default {
   [actions.login.fulfilled]: login,
   [actions.login.pending]: (state, {payload}) => {
     state.loading = true;
+  },
+
+  [actions.signup.pending]: (state, {payload}) => {
+    state.loading = true;
+  },
+  [actions.signup.fulfilled]: (state, {payload}) => {
+    state.loading = false;
+    state.actionResult = {
+      type: 'signUp',
+    };
+  },
+  [actions.resetActionResult]: (state, {payload}) => {
+    state.actionResult = null;
+  },
+
+  [actions.loginFailed]: (state, {payload}) => {
+    state.loading = false;
+  },
+
+  [actions.resetPassword.pending]: (state, {payload}) => {
+    state.loading = true;
+  },
+
+  [actions.resetPassword.fulfilled]: (state, {payload}) => {
+    state.loading = false;
+    state.actionResult = {
+      type: 'resetPassword',
+      success: true,
+    };
   },
 };

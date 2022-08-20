@@ -37,11 +37,11 @@ import {
 } from 'native-base';
 import {useDispatch, useSelector} from 'react-redux';
 import {
-  deleteCarts,
-  fetchCarts,
+  createSales,
+  deleteCart,
+  fetchBusiness,
   fetchOngkir,
-  fetchOutlets,
-  updateCarts,
+  updateCart,
 } from '../../store/actions/saleActions';
 
 import {arrPropinsi, arrKecamatan, arrKabupaten} from './address';
@@ -53,31 +53,38 @@ import {
 import {formatNumber} from '../../helper/utils';
 
 const Checkout = ({navigation}) => {
-  const {carts, outlets, ongkir} = useSelector(state => state.sale);
+  const {
+    carts,
+    outlets,
+    ongkir,
+    creatingSale,
+    business,
+    actionResult: saleActionResult,
+  } = useSelector(state => state.sale);
   const {addresses, isLoading, actionResult} = useSelector(
     state => state.account,
   );
   const dispatch = useDispatch();
+
   useEffect(() => {
-    dispatch(fetchCarts());
     dispatch(fetchAddresses());
-    dispatch(fetchOutlets());
   }, [actionResult, dispatch]);
 
   const [selectedAddress, setSelectedAddress] = useState(0);
-  const [isCod, setIsCod] = useState(null);
+  const [isCod, setIsCod] = useState(true);
   const [weight, setWeight] = useState(0);
   const [selectedCourier, setSelectedCourier] = useState(null);
   const [selectedLayananCourier, setSelectedLayananCourier] = useState(null);
 
-  const [selectedOutlet, setSelectedOutlet] = useState(0);
   const [address, setAddress] = useState(null);
   const [modalAddress, setModalAddress] = useState(false);
+  const [coCarts, setCoCarts] = useState([]);
 
   useEffect(() => {
-    if (carts) {
-      setWeight(carts.reduce((a, b) => a + b.qty * b.variant?.weight, 0));
-    }
+    setCoCarts(carts?.filter(a => a.selected === true, []));
+    const businessId = carts?.find(a => a.selected === true)?.data?.product
+      ?.businessId;
+    dispatch(fetchBusiness(businessId));
   }, [carts]);
 
   const onAddressChange = value => {
@@ -109,14 +116,17 @@ const Checkout = ({navigation}) => {
 
   //fetch ongkir
   useEffect(() => {
-    if (isCod === false && selectedAddress && selectedOutlet) {
-      const originId = outlets?.find(a => a.id === selectedOutlet)?.districtId;
+    if (isCod === false && selectedAddress && business) {
+      const originId = business?.districtId;
       const destinationId = addresses?.find(a => a.id === selectedAddress)
         ?.district?.id;
       console.log('fetch ongkir param', originId, destinationId, weight);
       dispatch(fetchOngkir({originId, destinationId, weight}));
+      setSelectedLayananCourier(null);
     }
-  }, [selectedOutlet, selectedAddress, weight, isCod]);
+
+    if (isCod === true) setSelectedLayananCourier(null);
+  }, [business, selectedAddress, weight, isCod]);
 
   const [ongkirOpt, setOngkirOpt] = useState([]);
   const [courierOpt, setCourierOpt] = useState([]);
@@ -168,21 +178,91 @@ const Checkout = ({navigation}) => {
   };
 
   const [total, setTotal] = useState(0);
+
   useEffect(() => {
     const ongkirCost = selectedLayananCourier?.cost || 0;
-    const totalItem = carts?.reduce((a, b) => a + b.qty * b.variant?.price, 0);
+    const totalItem = coCarts?.reduce((a, b) => a + b.qty * b.data?.price, 0);
     console.log('total', ongkirCost + totalItem);
     setTotal(totalItem + ongkirCost);
-  }, [carts, selectedLayananCourier]);
+    setWeight(coCarts?.reduce((a, b) => a + b.qty * b.data?.weight, 0));
+  }, [coCarts, selectedLayananCourier]);
 
   useEffect(() => {
     console.log('totalnya', total);
   }, [total]);
 
+  const toast = useToast();
+  const toastError = msg => {
+    toast.show({
+      title: msg,
+      placement: 'bottom',
+      bgColor: 'red.600',
+    });
+  };
+  const onSubmitCheckout = () => {
+    if (!address) return toastError('Alamat belum dipilih');
+    if (isCod === false) {
+      if (!selectedCourier) return toastError('Kurir pengiriman belum dipilih');
+      if (!selectedLayananCourier)
+        return toastError('Layanan pengiriman belum dipilih');
+    }
+    const data = {
+      businessId: business?.id,
+      name: address.receiver,
+      email: address.email,
+      phone: address.phone,
+      address: address.address,
+      districtId: address.district?.id,
+      postalCode: address.postalCode,
+      shippingCourir: selectedCourier || null,
+      shippingService: selectedLayananCourier?.service || null,
+      shippingCost: selectedLayananCourier?.cost || 0,
+      isCod: isCod,
+      codFee: 0,
+      details: coCarts?.map(a => {
+        return {
+          variantId: a.variantId,
+          inType: a.inType,
+          qty: a.qty,
+        };
+      }, []),
+    };
+    console.log('data', data);
+    dispatch(createSales(data));
+  };
+
+  useEffect(() => {
+    if (
+      saleActionResult &&
+      saleActionResult?.type === 'createSale' &&
+      saleActionResult?.id
+    ) {
+      dispatch(deleteCart(-1));
+      navigation.replace('TransaksiDetail', {id: saleActionResult.id});
+    }
+    dispatch(resetActionResult());
+    // console.log('saleActionResult', saleActionResult);
+  }, [saleActionResult]);
+
   return (
     <NativeBaseProvider>
-      <Box bg="white">
-        <Header title="Checkout" onPress={() => navigation.goBack()} />
+      <Box
+        bg="white"
+        style={{
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 1,
+          },
+          shadowOpacity: 0.22,
+          shadowRadius: 2.22,
+          elevation: 1,
+        }}>
+        <Header
+          title="Checkout"
+          onPress={() => navigation.goBack()}
+          back={true}
+        />
       </Box>
 
       <ScrollView bg="gray.50">
@@ -211,7 +291,7 @@ const Checkout = ({navigation}) => {
                 value="newAddress"
               />
               {optAddress?.map(a => (
-                <Select.Item key={a.id} label={a.label} value={a.value} />
+                <Select.Item key={a.value} label={a.label} value={a.value} />
               ))}
             </Select>
             {address && (
@@ -229,7 +309,7 @@ const Checkout = ({navigation}) => {
               </Box>
             )}
           </Box>
-          {selectedAddress ? (
+          {/* {selectedAddress ? (
             <Box
               p={4}
               borderBottomWidth={5}
@@ -253,27 +333,33 @@ const Checkout = ({navigation}) => {
             </Box>
           ) : (
             <Box></Box>
-          )}
-          {selectedOutlet ? (
+          )} */}
+          {selectedAddress ? (
             <Box p={4} borderBottomWidth={5} borderColor="coolGray.200">
               <Text color={'emerald.600'} bold>
                 Pilihan Pengiriman{' '}
               </Text>
+              <HStack mt="1" mb="1" justifyContent={'space-between'}>
+                <Text>Dikirim dari</Text>
+                <Text>{business?.label}</Text>
+              </HStack>
+              <HStack mt="1" mb="3" justifyContent={'space-between'}>
+                <Text>Total Berat</Text>
+                <Text>{formatNumber(weight / 1000)}Kg</Text>
+              </HStack>
               <Radio.Group
                 defaultValue="1"
                 name="myRadioGroup"
                 onChange={value => setIsCod(value === '1')}
                 accessibilityLabel="Pick your favorite number">
                 <Radio value="1" my={1} size={'sm'} key={1}>
-                  Ongkir COD/Bayar ditempat
+                  Ongkir COD/Bayar ditempat (J&T)
                 </Radio>
                 <Radio value="2" my={1} size={'sm'} key={2}>
                   Bayar Barang + Ongkir
                 </Radio>
               </Radio.Group>
-              <Text mt="1" mb="1">
-                Total Berat {formatNumber(weight / 1000)}Kg
-              </Text>
+
               {isCod === false ? (
                 <Box>
                   {ongkir === null ? (
@@ -335,7 +421,7 @@ const Checkout = ({navigation}) => {
             <Text color={'emerald.600'} bold>
               Item Barang{' '}
             </Text>
-            {carts?.map(item => (
+            {coCarts?.map(item => (
               <ItemCart
                 key={item.id}
                 item={item}
@@ -347,11 +433,39 @@ const Checkout = ({navigation}) => {
               />
             ))}
           </Box>
+          <Box
+            p={4}
+            borderBottomWidth={5}
+            borderTopWidth={1}
+            borderColor="coolGray.200">
+            <Text color={'emerald.600'} bold>
+              Ringkasan Belanja{' '}
+            </Text>
+            <HStack justifyContent={'space-between'} justifyItems={'center'}>
+              <Text>
+                Total barang ({coCarts?.reduce((a, b) => a + b.qty, 0)})
+              </Text>
+              <Text>
+                Rp
+                {formatNumber(
+                  coCarts?.reduce((a, b) => a + b.qty * b.data?.price, 0),
+                )}
+              </Text>
+            </HStack>
+            {selectedLayananCourier ? (
+              <HStack justifyContent={'space-between'} justifyItems={'center'}>
+                <Text>Total Ongkir</Text>
+                <Text>Rp{formatNumber(selectedLayananCourier?.cost)}</Text>
+              </HStack>
+            ) : (
+              <Box></Box>
+            )}
+          </Box>
         </Stack>
       </ScrollView>
       <Box
         // flex={1}
-        bg="green.300"
+        // bg="green.300"
         safeAreaTop
         width="100%">
         {/* <Center flex={1}></Center> */}
@@ -371,10 +485,10 @@ const Checkout = ({navigation}) => {
             </Text>
           </Box>
           <Button
+            isLoading={creatingSale}
             borderRadius={20}
             colorScheme="emerald"
-            // onPress={() => onDeleteCart()}
-            // height={10}
+            onPress={() => onSubmitCheckout()}
             fontWeight={'extrabold'}
             width="180">
             Bayar
@@ -457,9 +571,9 @@ const ModalAddAddress = ({show, setShow, setSelectedAddress}) => {
   };
 
   useEffect(() => {
-    if (actionResult && actionResult.type === 'addAddress') {
+    if (actionResult && actionResult?.type === 'addAddress') {
       console.log('set selected address new', actionResult);
-      setSelectedAddress(actionResult.id);
+      setSelectedAddress(actionResult?.id);
       setShow(false);
       dispatch(resetActionResult());
     }
@@ -600,6 +714,7 @@ const ModalAddAddress = ({show, setShow, setSelectedAddress}) => {
               isLoading={isLoading}
               width={100}
               borderRadius={20}
+              colorScheme={'emerald'}
               onPress={() => {
                 onAddressSave();
                 // setShow(false);
@@ -622,7 +737,7 @@ const ItemCart = ({item, isLoading, actionResult, onCheckboxChange}) => {
     if (value < 0 && qty === 1) setIsOpen(true);
     else {
       setQty(parseInt(qty, 10) + value);
-      dispatch(updateCarts({id: item.id, inType: item.inType, qty: item.qty}));
+      dispatch(updateCart({id: item.id, inType: item.inType, qty: item.qty}));
     }
   };
 
@@ -633,7 +748,7 @@ const ItemCart = ({item, isLoading, actionResult, onCheckboxChange}) => {
 
   const dispatch = useDispatch();
   const onDeleteCart = () => {
-    dispatch(deleteCarts(item.id));
+    dispatch(deleteCart(item.id));
   };
 
   useEffect(() => {
@@ -656,11 +771,12 @@ const ItemCart = ({item, isLoading, actionResult, onCheckboxChange}) => {
             color="coolGray.600"
             flex={1}
             isTruncated={true}>
-            {item.qty} x {item.variant?.product?.title}
+            {item.qty} x {item.data?.product?.title} @Rp
+            {formatNumber(item.data?.price)}
           </Text>
           <HStack justifyContent={'space-between'} mt={1}>
             <HStack>
-              <Badge colorScheme={'info'}>{item.variant?.name}</Badge>
+              <Badge colorScheme={'info'}>{item.data?.name}</Badge>
               <Badge colorScheme={'info'}>
                 {item.inType === 'bubuk' ? 'Bubuk' : 'Roast Bean'}
               </Badge>

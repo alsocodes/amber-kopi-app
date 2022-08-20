@@ -6,10 +6,22 @@ const initialState = {
   isLoading: false,
   carts: [],
   sales: [],
-  currentSales: [],
+  salesFetching: false,
+  activeSales: [],
+  activesalesFetching: false,
   actionResult: null,
   outlets: [],
   ongkir: null,
+  creatingSale: false,
+  sale: null,
+  saleFetching: false,
+  bankaccounts: [],
+  cartProducts: [],
+  business: null,
+  tracking: null,
+  trackingFecthing: false,
+  resellerSales: null,
+  resellerSalesFetching: false,
 };
 
 /** Slice */
