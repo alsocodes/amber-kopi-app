@@ -34,7 +34,6 @@ const arrPropinsi = [
   {id: 33, name: 'Sumatera Selatan'},
   {id: 34, name: 'Sumatera Utara'},
 ];
-
 const arrKabupaten = [
   {id: 1, name: 'Badung', prop: 1},
   {id: 2, name: 'Bangli', prop: 1},
@@ -512,7 +511,6 @@ const arrKabupaten = [
   {id: 474, name: 'Tebing Tinggi', prop: 34},
   {id: 475, name: 'Toba Samosir', prop: 34},
 ];
-
 const arrKecamatan = [
   {id: 258, name: 'Abiansemal', kab: 1, prop: 1},
   {id: 259, name: 'Kuta', kab: 1, prop: 1},
@@ -3489,19 +3487,9 @@ const arrKecamatan = [
   {id: 2444, name: 'Mendawai', kab: 174, prop: 14},
   {id: 2445, name: 'Petak Malai', kab: 174, prop: 14},
   {id: 2446, name: 'Pulau Malan', kab: 174, prop: 14},
-  {
-    id: 2447,
-    name: 'Sanamen Mantikei (Senameng Mantikei)',
-    kab: 174,
-    prop: 14,
-  },
+  {id: 2447, name: 'Sanamen Mantikei (Senameng Mantikei)', kab: 174, prop: 14},
   {id: 2448, name: 'Tasik Payawan', kab: 174, prop: 14},
-  {
-    id: 2449,
-    name: 'Tewang Sanggalang Garing (Sangalang)',
-    kab: 174,
-    prop: 14,
-  },
+  {id: 2449, name: 'Tewang Sanggalang Garing (Sangalang)', kab: 174, prop: 14},
   {id: 2874, name: 'Arut Selatan', kab: 175, prop: 14},
   {id: 2875, name: 'Arut Utara', kab: 175, prop: 14},
   {id: 2876, name: 'Kotawaringin Lama', kab: 175, prop: 14},
@@ -6051,12 +6039,7 @@ const arrKecamatan = [
   {id: 5627, name: 'Pitu Riawa', kab: 365, prop: 28},
   {id: 5628, name: 'Tellu Limpoe', kab: 365, prop: 28},
   {id: 5629, name: 'Watang Pulu', kab: 365, prop: 28},
-  {
-    id: 5630,
-    name: 'Wattang Sidenreng (Watang Sidenreng)',
-    kab: 365,
-    prop: 28,
-  },
+  {id: 5630, name: 'Wattang Sidenreng (Watang Sidenreng)', kab: 365, prop: 28},
   {id: 5739, name: 'Bulupoddo', kab: 366, prop: 28},
   {id: 5740, name: 'Pulau Sembilan', kab: 366, prop: 28},
   {id: 5741, name: 'Sinjai Barat', kab: 366, prop: 28},
@@ -6080,12 +6063,7 @@ const arrKecamatan = [
   {id: 6192, name: 'Mangara Bombang', kab: 368, prop: 28},
   {id: 6193, name: 'Mappakasunggu', kab: 368, prop: 28},
   {id: 6194, name: 'Patallassang', kab: 368, prop: 28},
-  {
-    id: 6195,
-    name: 'Polombangkeng Selatan (Polobangkeng)',
-    kab: 368,
-    prop: 28,
-  },
+  {id: 6195, name: 'Polombangkeng Selatan (Polobangkeng)', kab: 368, prop: 28},
   {id: 6196, name: 'Polombangkeng Utara (Polobangkeng)', kab: 368, prop: 28},
   {id: 6197, name: 'Sanrobone', kab: 368, prop: 28},
   {id: 6214, name: 'Bittuang', kab: 369, prop: 28},
@@ -7534,9 +7512,4 @@ const arrKecamatan = [
   {id: 6666, name: 'Tampahan', kab: 475, prop: 34},
   {id: 6667, name: 'Uluan', kab: 475, prop: 34},
 ];
-
-module.exports = {
-  arrKecamatan,
-  arrKabupaten,
-  arrPropinsi,
-};
+module.exports = {arrKecamatan, arrKabupaten, arrPropinsi};

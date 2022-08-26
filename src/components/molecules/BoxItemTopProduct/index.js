@@ -12,7 +12,6 @@ const BoxItemTopProduct = ({bgColor, icon, text, price, onPress, index}) => {
       <View style={{top: -40}}>
         <View>
           <Image source={icon} style={styles.image} />
-          {/* <Gap height={20} /> */}
           <Text
             numberOfLines={2}
             fontSize={16}
@@ -22,7 +21,6 @@ const BoxItemTopProduct = ({bgColor, icon, text, price, onPress, index}) => {
             {text}
           </Text>
         </View>
-        {/* <Gap height={20} /> */}
         <View style={styles.price}>
           <Text fontSize={16} color={'gray.600'}>
             Rp{formatNumber(price)}

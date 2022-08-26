@@ -2,24 +2,15 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {Header} from '../../components';
-import {colors, fonts} from '../../res';
+import {colors} from '../../res';
 
 import {getImageUri} from '../../services/api';
-import {
-  RefreshControl,
-  SafeAreaView,
-  StyleSheet,
-  useColorScheme,
-} from 'react-native';
+import {RefreshControl, SafeAreaView, useColorScheme} from 'react-native';
 import {
   Badge,
   Box,
-  Center,
-  Heading,
   HStack,
-  IconButton,
   Image,
-  Input,
   Pressable,
   ScrollView,
   Skeleton,
@@ -304,50 +295,3 @@ const ItemSale = ({item, navigation}) => {
 };
 
 export default Transaksi;
-
-const styles = StyleSheet.create({
-  flex1: {flex: 1},
-  wrapperSearch: {
-    height: 40,
-    backgroundColor: colors.lightGrey,
-    borderRadius: 12,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 25,
-  },
-  titleCategories: {
-    fontSize: 18,
-    fontFamily: fonts.SemiBold,
-    color: colors.primary,
-    padding: 20,
-  },
-  scrollViewCategories: {
-    paddingLeft: 20,
-  },
-  wrapperHeadTopProducts: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    marginBottom: 10,
-  },
-  tittleTopProducts: {
-    color: colors.primary,
-    fontFamily: fonts.SemiBold,
-    fontSize: 20,
-  },
-  textSeeAll: {
-    color: colors.black,
-    fontFamily: fonts.Medium,
-    fontSize: 12,
-  },
-  sectionBoxTopProduct: {
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: 10,
-
-    // paddingHorizontal: 20,
-  },
-});

@@ -4,12 +4,11 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   useColorScheme,
   View,
 } from 'react-native';
-import {BoxItemTopProduct, Gap, Header} from '../../components';
-import {colors, fonts} from '../../res';
+import {BoxItemTopProduct, Header} from '../../components';
+import {colors} from '../../res';
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchAllProductsByCat} from '../../store/actions/productActions';
 import {getImageUri} from '../../services/api';
@@ -28,7 +27,7 @@ const Categories = ({route, navigation}) => {
 
   return (
     <SafeAreaView style={styles.flex1}>
-      {/* <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} /> */}
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <View style={styles.flex1}>
         {/* header */}
         <Header
@@ -37,7 +36,6 @@ const Categories = ({route, navigation}) => {
           onPress={() => navigation.goBack()}
           title={`Kategori ${route.params?.name}`}
         />
-        <Gap height={10} />
         {/* Content */}
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.sectionBoxTopProduct}>
@@ -68,14 +66,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.white,
   },
-  wrapperTittle: {
-    paddingHorizontal: 20,
-  },
-  tittle: {
-    fontSize: 20,
-    fontFamily: fonts.SemiBold,
-    color: colors.primary,
-  },
+
   sectionBoxTopProduct: {
     flex1: 1,
     flexDirection: 'row',

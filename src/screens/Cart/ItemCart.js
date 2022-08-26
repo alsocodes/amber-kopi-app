@@ -94,11 +94,11 @@ const ItemCart = ({
               _dark={{
                 color: 'warmGray.50',
               }}
-              color="coolGray.600"
+              color={'gray.600'}
               flex={1}
               isTruncated={true}
               numberOfLines={2}
-              bold>
+              fontWeight={'semibold'}>
               {item.data?.product?.title} @Rp{formatNumber(item.data?.price)}
             </Text>
           </Box>

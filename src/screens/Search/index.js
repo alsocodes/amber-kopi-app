@@ -7,32 +7,18 @@ import {
   StyleSheet,
   StatusBar,
   ScrollView,
-  TextInput,
-  TouchableOpacity,
-  useWindowDimensions,
-  Dimensions,
   RefreshControl,
 } from 'react-native';
-import {
-  BoxItemCategories,
-  BoxItemTopProduct,
-  Gap,
-  Header,
-} from '../../components';
+import {BoxItemTopProduct} from '../../components';
 import {colors, fonts} from '../../res';
 import {searchProducts} from '../../store/actions/productActions';
 import {getImageUri} from '../../services/api';
 import {
   Box,
-  Flex,
-  Heading,
   HStack,
-  Icon,
   IconButton,
-  Image,
   Input,
   Skeleton,
-  Stack,
   VStack,
   Text,
 } from 'native-base';
@@ -77,7 +63,9 @@ const Search = ({route, navigation}) => {
   }, [refreshing]);
 
   return (
-    <SafeAreaView style={styles.flex1}>
+    <SafeAreaView
+      style={styles.flex1}
+      style={{backgroundColor: colors.white, height: '100%'}}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={'#34d399'}
@@ -207,42 +195,6 @@ const Search = ({route, navigation}) => {
 export default Search;
 
 const styles = StyleSheet.create({
-  flex1: {flex: 1, backgroundColor: colors.white},
-  wrapperSearch: {
-    height: 40,
-    backgroundColor: colors.lightGrey,
-    borderRadius: 12,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 25,
-  },
-  titleCategories: {
-    fontSize: 18,
-    fontFamily: fonts.SemiBold,
-    color: colors.primary,
-    padding: 20,
-  },
-  scrollViewCategories: {
-    paddingLeft: 20,
-  },
-  wrapperHeadTopProducts: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    marginBottom: 10,
-  },
-  tittleTopProducts: {
-    color: colors.primary,
-    fontFamily: fonts.SemiBold,
-    fontSize: 20,
-    marginBottom: 4,
-  },
-  textSeeAll: {
-    color: colors.black,
-    fontFamily: fonts.Medium,
-    fontSize: 12,
-  },
   sectionBoxTopProduct: {
     flex: 1,
     flexDirection: 'row',

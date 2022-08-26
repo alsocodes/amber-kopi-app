@@ -2,27 +2,22 @@ import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {Header} from '../../components';
-import {colors, fonts} from '../../res';
-import {getImageUri} from '../../services/api';
+import {colors} from '../../res';
 import {
-  Pressable,
+  RefreshControl,
   SafeAreaView,
   ScrollView,
+  Share,
   StyleSheet,
   useColorScheme,
 } from 'react-native';
 import {
   Badge,
   Box,
-  Center,
-  Heading,
   HStack,
   IconButton,
   Button,
-  Image,
   Input,
-  Skeleton,
-  Spacer,
   Stack,
   StatusBar,
   Text,
@@ -39,9 +34,8 @@ import {
   faTrash,
   faEyeSlash,
   faEye,
-  faCaretRight,
-  faArrowLeft,
-  faArrowRight,
+  faCopy,
+  faShareAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   deleteAddresses,
@@ -51,9 +45,12 @@ import {
   updateAddresses,
   updateProfile,
 } from '../../store/actions/accountActions';
+import {checkVersion} from '../../store/actions/appActions';
 import {arrKabupaten, arrKecamatan, arrPropinsi} from '../Checkout/address';
 import {ddMmYy} from '../../helper/utils';
 import {logout} from '../../store/actions/authActions';
+import {useCallback} from 'react';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 const Akun = ({navigation}) => {
   const {
@@ -64,6 +61,13 @@ const Akun = ({navigation}) => {
   } = useSelector(state => state.account);
   const isDarkMode = useColorScheme() === 'dark';
   const dispatch = useDispatch();
+  const {version} = useSelector(state => state.app);
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    setShowModal(true);
+  }, [version]);
+
   useEffect(() => {
     dispatch(fetchProfile());
     dispatch(fetchAddresses());
@@ -89,15 +93,6 @@ const Akun = ({navigation}) => {
     setShowDel(false);
     setShowEdit(false);
     setShowProfile(false);
-    // if (
-    //   actionResult?.type === 'deleteAddress' ||
-    //   actionResult?.type === 'updateAddress' ||
-    //   actionResult?.type === 'createAddress'
-    // ) {
-    //   console.log('uxxxxx');
-    // }
-
-    // if (actionResult?.type === 'updateProfile') d
     dispatch(fetchAddresses());
     dispatch(fetchProfile());
     dispatch(resetActionResult());
@@ -124,6 +119,59 @@ const Akun = ({navigation}) => {
     navigation.replace('GetStarted');
   };
 
+  const onCheckPress = () => {
+    dispatch(checkVersion());
+  };
+
+  const [refreshing, setRefreshing] = useState(false);
+  const wait = timeout => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  };
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    wait(1000).then(() => setRefreshing(false));
+  }, []);
+
+  useEffect(() => {
+    if (refreshing) {
+      dispatch(fetchProfile());
+      dispatch(fetchAddresses());
+    }
+  }, [refreshing]);
+
+  const toast = useToast();
+  const toastSuccess = msg => {
+    toast.show({
+      title: msg,
+      placement: 'bottom',
+      bgColor: 'green.600',
+    });
+  };
+  const copy = () => {
+    Clipboard.setString(profile?.shareText || profile?.link);
+    toastSuccess('Link disalin');
+  };
+
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message: profile?.shareText || profile?.link,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
   return (
     <SafeAreaView style={{backgroundColor: colors.white, height: '100%'}}>
       <Box
@@ -144,7 +192,10 @@ const Akun = ({navigation}) => {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={'#34d399'}
       />
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         <VStack px={4} py={4} width={'100%'} space={2}>
           <HStack space={4} height={20}>
             <HStack
@@ -199,6 +250,17 @@ const Akun = ({navigation}) => {
             borderColor={'gray.300'}
             py={3}
             borderRadius={10}>
+            {profile?.isReseller && (
+              <VStack flex={1}>
+                <Text textAlign={'center'}>Kode Reseller</Text>
+                <Text
+                  fontSize={16}
+                  textAlign={'center'}
+                  fontWeight={'semibold'}>
+                  {profile?.code}
+                </Text>
+              </VStack>
+            )}
             <VStack flex={1}>
               <Text textAlign={'center'}>Gabung sejak</Text>
               <Text fontSize={16} textAlign={'center'} fontWeight={'semibold'}>
@@ -212,6 +274,53 @@ const Akun = ({navigation}) => {
               </Text>
             </VStack>
           </HStack>
+
+          <VStack flex={1} mt={2}>
+            <Text textAlign={'left'}>
+              Link {profile?.isReseller ? 'Referal' : 'Aplikasi'}
+            </Text>
+            <HStack mt={1} space={1}>
+              <Input
+                flex={1}
+                isReadOnly
+                py={0}
+                px={2}
+                fontSize={14}
+                type="text"
+                defaultValue={profile?.link}
+              />
+              <IconButton
+                variant="outline"
+                colorScheme={'coolGray'}
+                borderColor={'gray.400'}
+                width={10}
+                height={10}
+                onPress={() => copy()}
+                icon={
+                  <FontAwesomeIcon
+                    icon={faCopy}
+                    size={12}
+                    color={colors.grey}
+                  />
+                }
+              />
+              <IconButton
+                colorScheme={'gray'}
+                borderColor={'gray.400'}
+                variant="outline"
+                width={10}
+                height={10}
+                onPress={() => onShare()}
+                icon={
+                  <FontAwesomeIcon
+                    icon={faShareAlt}
+                    size={12}
+                    color={colors.grey}
+                  />
+                }
+              />
+            </HStack>
+          </VStack>
           {profile?.isReseller && (
             <Button
               mt={4}
@@ -312,12 +421,77 @@ const Akun = ({navigation}) => {
             onPress={() => onLogoutPress()}>
             Logout
           </Button>
-          <Text py={3} fontSize={12} textAlign={'center'} mb={10}>
-            App version 1.0.0 | 2022-08-08
+          <Text fontSize={12} textAlign={'center'} mt={2}>
+            App version 1.0.1 | 26-08-2022
           </Text>
+          <Button
+            mb={10}
+            variant={'ghost'}
+            colorScheme={'emerald'}
+            onPress={() => onCheckPress()}>
+            Check Version
+          </Button>
         </VStack>
       </ScrollView>
+      <ModalVersion
+        current={3}
+        version={version}
+        showModal={showModal}
+        setShowModal={setShowModal}
+      />
     </SafeAreaView>
+  );
+};
+
+const ModalVersion = ({current, version, showModal, setShowModal}) => {
+  return (
+    <Modal
+      isOpen={showModal}
+      onClose={() => setShowModal(version?.isMandatory)}>
+      <Modal.Content maxWidth="400px">
+        {/* <Modal.CloseButton /> */}
+        <Modal.Header>Update Aplikasi</Modal.Header>
+        <Modal.Body>
+          {current < version?.versionNumber ? (
+            <>
+              <Text mb={2} fontWeight={'semibold'}>
+                Versi Terbaru {version?.versionCode} telah tersedia
+              </Text>
+              <Text>Perubahan :</Text>
+              {version?.description?.split('|')?.map((item, index) => {
+                return <Text key={index}>- {item}</Text>;
+              })}
+            </>
+          ) : (
+            <Text mb={2} fontWeight={'semibold'}>
+              Aplikasi sudah terbaru versi {version?.versionCode}
+            </Text>
+          )}
+        </Modal.Body>
+        <HStack space={3} justifyContent="space-between" py={2} px={4}>
+          <Button
+            borderRadius={20}
+            variant="ghost"
+            colorScheme="blueGray"
+            onPress={() => setShowModal(false)}>
+            Tutup
+          </Button>
+          {version?.versionNumber > current && (
+            <Button
+              borderRadius={20}
+              variant="solid"
+              colorScheme={'emerald'}
+              onPress={() =>
+                Linking.openURL(
+                  'https://play.google.com/store/apps/details?id=com.amberkopi',
+                )
+              }>
+              Update Sekarang
+            </Button>
+          )}
+        </HStack>
+      </Modal.Content>
+    </Modal>
   );
 };
 
@@ -739,50 +913,3 @@ const ModalAddAddress = ({
 };
 
 export default Akun;
-
-const styles = StyleSheet.create({
-  flex1: {flex: 1},
-  wrapperSearch: {
-    height: 40,
-    backgroundColor: colors.lightGrey,
-    borderRadius: 12,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 25,
-  },
-  titleCategories: {
-    fontSize: 18,
-    fontFamily: fonts.SemiBold,
-    color: colors.primary,
-    padding: 20,
-  },
-  scrollViewCategories: {
-    paddingLeft: 20,
-  },
-  wrapperHeadTopProducts: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    marginBottom: 10,
-  },
-  tittleTopProducts: {
-    color: colors.primary,
-    fontFamily: fonts.SemiBold,
-    fontSize: 20,
-  },
-  textSeeAll: {
-    color: colors.black,
-    fontFamily: fonts.Medium,
-    fontSize: 12,
-  },
-  sectionBoxTopProduct: {
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: 10,
-
-    // paddingHorizontal: 20,
-  },
-});

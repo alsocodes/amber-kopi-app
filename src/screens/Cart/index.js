@@ -1,10 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {StyleSheet, View, SafeAreaView} from 'react-native';
-import {colors, fonts} from '../../res';
-import {getImageUri} from '../../services/api';
+import {StyleSheet, SafeAreaView} from 'react-native';
+import {colors} from '../../res';
 
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faMinus, faPlus} from '@fortawesome/free-solid-svg-icons';
 import {
   HStack,
   VStack,
@@ -16,14 +13,8 @@ import {
   Skeleton,
 } from 'native-base';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  deleteCart,
-  fetchCartProducts,
-  updateCart,
-} from '../../store/actions/saleActions';
+import {deleteCart, updateCart} from '../../store/actions/saleActions';
 import {Header} from '../../components';
-import {fetchAllProducts} from '../../store/actions/productActions';
-import {formatNumber} from '../../helper/utils';
 import ItemCart from './ItemCart';
 
 const Cart = ({navigation}) => {
@@ -37,10 +28,6 @@ const Cart = ({navigation}) => {
   useEffect(() => {
     // console.log('carts', carts?.length, isLoading);
   }, [carts, isLoading]);
-
-  const onCheckboxChange = (item, checked) => {
-    dispatch(updateCart({id: id, inType: inType, qty: qty}));
-  };
 
   const [selectedCart, setSelectedCart] = useState([]);
   const [selectedBusiness, setSelectedBusiness] = useState(null);
@@ -92,39 +79,6 @@ const Cart = ({navigation}) => {
           back={true}
         />
       </Box>
-      <AlertDialog
-        leastDestructiveRef={cancelRef}
-        isOpen={!!deleteModal}
-        onClose={() => setDeleteModal(false)}>
-        <AlertDialog.Content>
-          <AlertDialog.CloseButton />
-          <AlertDialog.Body pt="20">
-            <Text fontSize={16} textAlign="center">
-              Hapus Item dari Keranjang
-            </Text>
-          </AlertDialog.Body>
-          <HStack space={3} justifyContent="flex-end" py={4} px={4}>
-            <Button.Group space={2} width={200}>
-              <Button
-                variant="unstyled"
-                colorScheme="coolGray"
-                onPress={() => setDeleteModal(false)}
-                width={90}
-                ref={cancelRef}>
-                Batal
-              </Button>
-              <Button
-                borderRadius={20}
-                isLoading={isLoading}
-                colorScheme="danger"
-                width={100}
-                onPress={() => onDeleteCart()}>
-                Ya
-              </Button>
-            </Button.Group>
-          </HStack>
-        </AlertDialog.Content>
-      </AlertDialog>
       <ScrollView bg="white" h="100%">
         {isLoading ? (
           <Box>
@@ -211,27 +165,41 @@ const Cart = ({navigation}) => {
           </Box>
         )}
       </ScrollView>
+      <AlertDialog
+        leastDestructiveRef={cancelRef}
+        isOpen={!!deleteModal}
+        onClose={() => setDeleteModal(false)}>
+        <AlertDialog.Content>
+          <AlertDialog.CloseButton />
+          <AlertDialog.Body pt="20">
+            <Text fontSize={16} textAlign="center">
+              Hapus Item dari Keranjang
+            </Text>
+          </AlertDialog.Body>
+          <HStack space={3} justifyContent="flex-end" py={4} px={4}>
+            <Button.Group space={2} width={200}>
+              <Button
+                variant="unstyled"
+                colorScheme="coolGray"
+                onPress={() => setDeleteModal(false)}
+                width={90}
+                ref={cancelRef}>
+                Batal
+              </Button>
+              <Button
+                borderRadius={20}
+                isLoading={isLoading}
+                colorScheme="danger"
+                width={100}
+                onPress={() => onDeleteCart()}>
+                Ya
+              </Button>
+            </Button.Group>
+          </HStack>
+        </AlertDialog.Content>
+      </AlertDialog>
     </SafeAreaView>
   );
 };
 
 export default Cart;
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.lightGrey,
-    height: '100%',
-    // padding: 14,
-  },
-  pageTitle: {
-    fontSize: 18,
-    fontFamily: fonts.SemiBold,
-    color: colors.primary,
-    marginBottom: 10,
-  },
-  cartWrapper: {
-    backgroundColor: colors.white,
-    padding: 10,
-    borderRadius: 5,
-  },
-});

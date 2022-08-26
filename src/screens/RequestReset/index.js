@@ -1,29 +1,19 @@
 import {
-  Icon,
   Input,
-  Stack,
   Button,
-  HStack,
   Box,
   Center,
   Heading,
   VStack,
   FormControl,
-  Link,
   Image,
-  IconButton,
 } from 'native-base';
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-// import {Button, Gap} from '../../components';
-import {colors, fonts} from '../../res';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faEyeSlash, faEye} from '@fortawesome/free-solid-svg-icons';
+import {colors} from '../../res';
 
 import {logoAmberColorSm} from '../../res/images/Illustrations';
 import {useDispatch, useSelector} from 'react-redux';
 import {
-  login,
   resetActionResult,
   resetPassword,
 } from '../../store/actions/authActions';
@@ -109,24 +99,3 @@ const RequestReset = ({navigation}) => {
 };
 
 export default RequestReset;
-
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: colors.white,
-    justifyItems: 'center',
-  },
-  image: {
-    height: 400,
-    width: 400,
-    alignSelf: 'center',
-  },
-  wrapperSlogan: {marginTop: 51},
-  txtSlogan: {
-    fontSize: 30,
-    color: colors.primary,
-    textAlign: 'center',
-    fontFamily: fonts.SemiBold,
-  },
-});

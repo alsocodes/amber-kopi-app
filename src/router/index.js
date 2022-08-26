@@ -1,5 +1,5 @@
-import React, {useMemo} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React from 'react';
+import {StyleSheet} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -10,7 +10,6 @@ import Categories from '../screens/Categories';
 import Detail from '../screens/Detail';
 import Signin from '../screens/Signin';
 import Checkout from '../screens/Checkout';
-import {useSelector} from 'react-redux';
 import Transaksi from '../screens/Transaksi';
 import Search from '../screens/Search';
 import TransaksiDetail from '../screens/TransaksiDetail';

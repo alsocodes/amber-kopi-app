@@ -9,25 +9,27 @@ import {
   Button,
   useToast,
   Text,
+  View,
+  Image,
+  VStack,
 } from 'native-base';
 import React, {useEffect, useState} from 'react';
 import {
-  Image,
   SafeAreaView,
   ScrollView,
   StatusBar,
-  StyleSheet,
   useColorScheme,
-  View,
+  useWindowDimensions,
 } from 'react-native';
-import {BoxRelatedItems, Gap, Header} from '../../components';
+import {BoxRelatedItems, Header} from '../../components';
 import {formatNumber} from '../../helper/utils';
-import {colors, fonts} from '../../res';
+import {colors} from '../../res';
 import {getImageUri} from '../../services/api';
 import {faMinus, faPlus} from '@fortawesome/free-solid-svg-icons';
 import {useDispatch, useSelector} from 'react-redux';
 import {createCart, resetActionResult} from '../../store/actions/saleActions';
 import {fetchRelatedProducts} from '../../store/actions/productActions';
+import RenderHTML from 'react-native-render-html';
 
 const Detail = ({route, navigation}) => {
   const {actionResult, isLoading} = useSelector(state => state.sale);
@@ -90,39 +92,67 @@ const Detail = ({route, navigation}) => {
     }
   }, [actionResult]);
 
-  return (
-    <SafeAreaView style={styles.flex1(bgColor)}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView>
-        <View>
-          <Header
-            onPress={() => navigation.goBack()}
-            back={true}
-            title={dataParams?.title}
-          />
-          <View style={styles.wrapperImg}>
-            <Image
-              source={getImageUri(dataParams?.product?.image)}
-              style={styles.image}
-            />
-          </View>
+  const {width} = useWindowDimensions();
 
-          <View style={styles.content}>
-            <View style={styles.wrapperTopContent}>
-              <View style={styles.rowTopContent}>
-                <Text style={styles.name}>{dataParams?.title}</Text>
+  return (
+    <Box flex={1} bg="white" safeAreaTop width="100%" alignSelf="center">
+      <VStack flex={1}>
+        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+        <Header
+          onPress={() => navigation.goBack()}
+          back={true}
+          title={dataParams?.title}
+        />
+        <ScrollView>
+          <View>
+            <View>
+              <Image
+                alt={'image-product'}
+                source={getImageUri(dataParams?.product?.image)}
+                style={{
+                  width: '100%',
+                  aspectRatio: 1600 / 1066,
+                  resizeMode: 'contain',
+                }}
+              />
+            </View>
+
+            <View
+              bgColor={'white'}
+              borderTopRadius={20}
+              marginTop={-3}
+              py={6}
+              px={4}>
+              <View>
+                <Text fontSize={20} fontWeight={'semibold'} color={'gray.600'}>
+                  {dataParams?.title}
+                </Text>
               </View>
-              <Text style={styles.price}>
+              <Text fontSize={16}>
                 Rp{formatNumber(dataParams?.price)} /{' '}
                 {dataParams?.weight / 1000} kg
               </Text>
-            </View>
-            <Text style={styles.excerpt}>{dataParams?.product?.excerpt}</Text>
-            <Text style={styles.desc}>{dataParams?.product?.description}</Text>
-            <View style={styles.wrapperRelatedItems}>
-              <Text style={styles.titleRelatedItems}>Related Items</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <View style={styles.wrapperBoxRelatedItems}>
+              <View bgColor={'gray.200'} px={2} py={2} borderRadius={8} my={2}>
+                <Text>{dataParams?.product?.excerpt}</Text>
+              </View>
+              <View>
+                <RenderHTML
+                  contentWidth={width}
+                  source={{
+                    html: dataParams?.product?.description,
+                  }}
+                />
+              </View>
+              {/* <Text style={styles.desc}>{dataParams?.product?.description}</Text> */}
+              <View mt={4} mb={2}>
+                <Text
+                  fontSize={18}
+                  color={'emerald.500'}
+                  fontWeight={'semibold'}
+                  mb={2}>
+                  Produk terkait
+                </Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                   {relatedProducts?.map((item, index) => {
                     return (
                       <BoxRelatedItems
@@ -135,83 +165,86 @@ const Detail = ({route, navigation}) => {
                       />
                     );
                   })}
-                </View>
-              </ScrollView>
+                </ScrollView>
+              </View>
             </View>
-            {/* <Gap height={50} /> */}
           </View>
-        </View>
-      </ScrollView>
-      <View style={styles.bottomBar}>
-        <HStack space={3} alignItems="center" justifyContent="center">
-          <Box flex={1} pt={2}>
-            <HStack space={1}>
-              <IconButton
-                variant="outline"
-                color={colors.grey}
-                borderColor={colors.grey}
-                alignItems="center"
-                justifyContent="center"
-                minWidth={8}
-                _icon={{color: colors.grey}}
-                icon={<FontAwesomeIcon icon={faMinus} size={12} />}
-                onPress={() => updateQty(-1)}
-              />
-              <Input
-                placeholder="0"
-                value={`${qty}`}
-                onChangeText={q => onQtyChange(q)}
-                px={2}
-                size="md"
-                height={38}
-                flex={1}
-                borderColor={colors.grey}
-              />
-              <IconButton
-                variant="outline"
-                color={colors.grey}
-                borderColor={colors.grey}
-                alignItems="center"
-                justifyContent="center"
-                minWidth={8}
-                _icon={{color: colors.grey}}
-                icon={<FontAwesomeIcon icon={faPlus} size={12} />}
-                onPress={() => updateQty(1)}
-              />
-            </HStack>
-          </Box>
-
-          <Box flex={1}>
-            <Select
+        </ScrollView>
+      </VStack>
+      <HStack
+        alignItems="center"
+        safeAreaBottom
+        borderColor={'gray.200'}
+        borderTopWidth={1}
+        space={2}
+        px={4}
+        pb={2}
+        bgColor={'white'}>
+        <Box flex={1} pt={2}>
+          <HStack space={1}>
+            <IconButton
+              variant="outline"
+              color={colors.grey}
               borderColor={colors.grey}
-              height={39}
-              accessibilityLabel="Pilih Jenis"
-              placeholder="Pilih Jenis"
-              _selectedItem={{
-                bg: 'teal.600',
-              }}
-              mt={1}
-              selectedValue={inType}
-              onValueChange={itemValue => setInType(itemValue)}>
-              <Select.Item label="Roast Bean" value="roastbean" />
-              <Select.Item label="Bubuk" value="bubuk" />
-            </Select>
-          </Box>
-          <Box flex={1} pt={2}>
-            <Button
-              // isLoading={isLoading}
-              borderRadius={20}
-              // disabled={buttonDisabled}
-              variant="solid"
-              colorScheme={'emerald'}
-              onPress={() => {
-                onAddToCart();
-              }}>
-              Keranjang
-            </Button>
-          </Box>
-        </HStack>
-      </View>
+              alignItems="center"
+              justifyContent="center"
+              minWidth={8}
+              _icon={{color: colors.grey}}
+              icon={<FontAwesomeIcon icon={faMinus} size={12} />}
+              onPress={() => updateQty(-1)}
+            />
+            <Input
+              placeholder="0"
+              value={`${qty}`}
+              onChangeText={q => onQtyChange(q)}
+              px={2}
+              size="md"
+              height={38}
+              flex={1}
+              borderColor={colors.grey}
+            />
+            <IconButton
+              variant="outline"
+              color={colors.grey}
+              borderColor={colors.grey}
+              alignItems="center"
+              justifyContent="center"
+              minWidth={8}
+              _icon={{color: colors.grey}}
+              icon={<FontAwesomeIcon icon={faPlus} size={12} />}
+              onPress={() => updateQty(1)}
+            />
+          </HStack>
+        </Box>
+
+        <Box flex={1}>
+          <Select
+            borderColor={colors.grey}
+            height={39}
+            accessibilityLabel="Pilih Jenis"
+            placeholder="Pilih Jenis"
+            _selectedItem={{
+              bg: 'teal.600',
+            }}
+            mt={1}
+            selectedValue={inType}
+            onValueChange={itemValue => setInType(itemValue)}>
+            <Select.Item label="Roast Bean" value="roastbean" />
+            <Select.Item label="Bubuk" value="bubuk" />
+          </Select>
+        </Box>
+        <Box flex={1} pt={2}>
+          <Button
+            borderRadius={20}
+            variant="solid"
+            colorScheme={'emerald'}
+            onPress={() => {
+              onAddToCart();
+            }}>
+            Keranjang
+          </Button>
+        </Box>
+      </HStack>
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
         <Modal.Content maxWidth="400px">
           <Modal.CloseButton />
@@ -252,152 +285,98 @@ const Detail = ({route, navigation}) => {
           </HStack>
         </Modal.Content>
       </Modal>
+    </Box>
+  );
+
+  return (
+    <SafeAreaView>
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <Header
+        onPress={() => navigation.goBack()}
+        back={true}
+        title={dataParams?.title}
+      />
+      <ScrollView>
+        <View>
+          <View>
+            <Image
+              alt={'image-product'}
+              source={getImageUri(dataParams?.product?.image)}
+              style={{
+                width: '100%',
+                aspectRatio: 1600 / 1066,
+                resizeMode: 'contain',
+              }}
+            />
+          </View>
+
+          <View
+            bgColor={'white'}
+            borderTopRadius={20}
+            marginTop={-4}
+            py={6}
+            px={4}>
+            <View>
+              <Text fontSize={20} fontWeight={'semibold'} color={'gray.600'}>
+                {dataParams?.title}
+              </Text>
+            </View>
+            <Text fontSize={16}>
+              Rp{formatNumber(dataParams?.price)} / {dataParams?.weight / 1000}{' '}
+              kg
+            </Text>
+            <View bgColor={'gray.200'} px={2} py={2} borderRadius={8} my={2}>
+              <Text>{dataParams?.product?.excerpt}</Text>
+            </View>
+            <View>
+              <RenderHTML
+                contentWidth={width}
+                source={{
+                  html: `${dataParams?.product?.description} <br/> ${dataParams?.product?.description}`,
+                }}
+              />
+            </View>
+            {/* <Text style={styles.desc}>{dataParams?.product?.description}</Text> */}
+            <View mt={4} mb={2}>
+              <Text
+                fontSize={18}
+                color={'emerald.500'}
+                fontWeight={'semibold'}
+                mb={2}>
+                Produk terkait
+              </Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {relatedProducts?.map((item, index) => {
+                  return (
+                    <BoxRelatedItems
+                      key={index}
+                      image={getImageUri(item?.product?.image)}
+                      name={item.title}
+                      price={item.price}
+                      bgColor={item.bgColor}
+                      onPress={() => navigation.navigate('Detail', item)}
+                    />
+                  );
+                })}
+              </ScrollView>
+            </View>
+          </View>
+        </View>
+        <HStack safeAreaBottom>
+          <Text>Test</Text>
+        </HStack>
+      </ScrollView>
+      {/* <View
+        // bgColor={'white'}
+        borderTopWidth={1}
+        borderColor={'gray.200'}
+        px={4}>
+        <HStack space={3} alignItems="center" justifyContent="center">
+          
+        </HStack>
+      </View> */}
     </SafeAreaView>
   );
 };
 
 export default Detail;
-
-const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    marginTop: 100,
-    alignSelf: 'flex-end',
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  flex1: bgColor => ({
-    flex: 1,
-    backgroundColor: bgColor,
-    position: 'relative',
-  }),
-  wrapperImg: {
-    // backgroundColor: '#f00f00',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  image: {
-    // height: 350,
-    width: '100%',
-    aspectRatio: 1600 / 1066,
-    resizeMode: 'contain',
-  },
-  content: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: colors.white,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    marginTop: -15,
-    paddingTop: 34,
-  },
-  wrapperTopContent: {
-    marginBottom: 28,
-    paddingHorizontal: 20,
-  },
-  rowTopContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  name: {
-    fontFamily: fonts.SemiBold,
-    fontSize: 20,
-    width: '80%',
-  },
-  price: {
-    fontFamily: fonts.Regular,
-    fontSize: 14,
-    color: colors.black,
-  },
-  excerpt: {
-    backgroundColor: colors.lightGrey,
-    marginHorizontal: 20,
-    padding: 8,
-    borderRadius: 5,
-    marginBottom: 10,
-    fontStyle: 'italic',
-  },
-  desc: {
-    paddingHorizontal: 20,
-    lineHeight: 20,
-    fontSize: 15,
-  },
-  wrapperRelatedItems: {
-    marginTop: 25,
-  },
-  titleRelatedItems: {
-    fontFamily: fonts.SemiBold,
-    fontSize: 14,
-    color: colors.primary,
-    paddingHorizontal: 20,
-  },
-  wrapperBoxRelatedItems: {
-    flexDirection: 'row',
-    marginTop: 20,
-    paddingLeft: 20,
-  },
-
-  bottomBar: {
-    paddingHorizontal: 10,
-    paddingTop: 6,
-    paddingBottom: 10,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderColor: colors.lightGrey,
-    borderTopWidth: 1,
-    backgroundColor: colors.white,
-  },
-  btnAtc: {
-    backgroundColor: colors.primary,
-    height: 37,
-    width: 150,
-    paddingHorizontal: 10,
-    borderRadius: 6,
-    justifyContent: 'center',
-    alignSelf: 'center',
-  },
-  btnAtcText: {
-    color: colors.white,
-    fontSize: 16,
-    fontFamily: fonts.Medium,
-    color: colors.white,
-    textAlign: 'center',
-  },
-});

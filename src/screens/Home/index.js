@@ -2,7 +2,6 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   View,
-  // Text,
   useColorScheme,
   SafeAreaView,
   StyleSheet,
@@ -139,19 +138,6 @@ const Home = ({navigation}) => {
           dark={true}
           value={carts?.reduce((a, b) => a + b.qty, 0)}
         />
-        {/* <IconButton
-          onPress={() => navigation.navigate('Cart')}
-          variant="ghost"
-          borderRadius={10}
-          color={colors.grey}
-          borderColor={colors.grey}
-          alignItems="center"
-          justifyContent="center"
-          height={10}
-          minWidth={8}
-          _icon={{color: colors.white}}
-          icon={<FontAwesomeIcon icon={faShoppingBasket} size={24} />}
-        /> */}
       </HStack>
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -186,7 +172,11 @@ const Home = ({navigation}) => {
               )}
             </Box>
             <Box mt={0}>
-              <Text style={styles.tittleTopProducts} mt={2}>
+              <Text
+                mt={2}
+                fontSize={18}
+                color={'emerald.500'}
+                fontWeight={'semibold'}>
                 Kategori
               </Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -204,7 +194,12 @@ const Home = ({navigation}) => {
             </Box>
 
             <Box>
-              <Text style={styles.tittleTopProducts} mt={2}>
+              <Text
+                mt={2}
+                fontSize={18}
+                color={'emerald.500'}
+                fontWeight={'semibold'}
+                mt={2}>
                 Produk
               </Text>
               <View style={styles.sectionBoxTopProduct}>
@@ -243,12 +238,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 25,
   },
-  titleCategories: {
-    fontSize: 18,
-    fontFamily: fonts.SemiBold,
-    color: colors.primary,
-    padding: 20,
-  },
+
   scrollViewCategories: {
     paddingLeft: 20,
   },
@@ -258,17 +248,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 10,
   },
-  tittleTopProducts: {
-    color: colors.primary,
-    fontFamily: fonts.SemiBold,
-    fontSize: 20,
-    marginBottom: 4,
-  },
-  textSeeAll: {
-    color: colors.black,
-    fontFamily: fonts.Medium,
-    fontSize: 12,
-  },
+
   sectionBoxTopProduct: {
     flex: 1,
     flexDirection: 'row',

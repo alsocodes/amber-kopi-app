@@ -1,57 +1,28 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import Clipboard from '@react-native-clipboard/clipboard';
 
 import {Header} from '../../components';
-import {colors, fonts} from '../../res';
+import {colors} from '../../res';
 
-import {getImageUri} from '../../services/api';
 import {
-  PermissionsAndroid,
   RefreshControl,
   SafeAreaView,
   StyleSheet,
   useColorScheme,
 } from 'react-native';
 import {
-  Image,
-  Pressable,
-  Badge,
   Box,
-  Button,
-  Center,
-  FormControl,
-  Heading,
   HStack,
-  IconButton,
-  Input,
   ScrollView,
   Skeleton,
-  Stack,
   StatusBar,
   Text,
-  TextArea,
   VStack,
-  useToast,
-  Spacer,
-  AlertDialog,
 } from 'native-base';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faUpload, faCopy, faTruck} from '@fortawesome/free-solid-svg-icons';
-import {
-  createConfirmPayment,
-  fetchBankaccounts,
-  fetchSale,
-  fetchTracking,
-  resetSale,
-} from '../../store/actions/saleActions';
-// import ImagePicker from 'react-native-image-picker';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {ddMmYy} from '../../helper/utils';
+import {fetchTracking} from '../../store/actions/saleActions';
 
 const Tracking = ({route, navigation}) => {
   const dataParams = route.params;
-  const {id} = dataParams;
   const dispatch = useDispatch();
   const isDarkMode = useColorScheme() === 'dark';
   const {tracking, trackingFetching} = useSelector(state => state.sale);
@@ -230,50 +201,3 @@ const BoxSkleton = () => {
 };
 
 export default Tracking;
-
-const styles = StyleSheet.create({
-  flex1: {flex: 1},
-  wrapperSearch: {
-    height: 40,
-    backgroundColor: colors.lightGrey,
-    borderRadius: 12,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 25,
-  },
-  titleCategories: {
-    fontSize: 18,
-    fontFamily: fonts.SemiBold,
-    color: colors.primary,
-    padding: 20,
-  },
-  scrollViewCategories: {
-    paddingLeft: 20,
-  },
-  wrapperHeadTopProducts: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    marginBottom: 10,
-  },
-  tittleTopProducts: {
-    color: colors.primary,
-    fontFamily: fonts.SemiBold,
-    fontSize: 20,
-  },
-  textSeeAll: {
-    color: colors.black,
-    fontFamily: fonts.Medium,
-    fontSize: 12,
-  },
-  sectionBoxTopProduct: {
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: 10,
-
-    // paddingHorizontal: 20,
-  },
-});

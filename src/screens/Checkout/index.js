@@ -1,28 +1,16 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {StyleSheet, View, SafeAreaView} from 'react-native';
-import {colors, fonts} from '../../res';
-import {getImageUri} from '../../services/api';
-
 import {Header} from '../../components';
 
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faMinus, faPlus} from '@fortawesome/free-solid-svg-icons';
 import {
-  Avatar,
-  FlatList,
-  Heading,
   HStack,
   VStack,
   Text,
   Spacer,
-  Image,
   Badge,
-  IconButton,
   Input,
   Box,
   Checkbox,
   ScrollView,
-  AlertDialog,
   Button,
   Select,
   Modal,
@@ -33,7 +21,6 @@ import {
   Radio,
   Skeleton,
   NativeBaseProvider,
-  Center,
 } from 'native-base';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -55,7 +42,6 @@ import {formatNumber} from '../../helper/utils';
 const Checkout = ({navigation}) => {
   const {
     carts,
-    outlets,
     ongkir,
     creatingSale,
     business,
@@ -789,22 +775,3 @@ const ItemCart = ({item, isLoading, actionResult, onCheckboxChange}) => {
   );
 };
 export default Checkout;
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.lightGrey,
-    height: '100%',
-    // padding: 14,
-  },
-  pageTitle: {
-    fontSize: 18,
-    fontFamily: fonts.SemiBold,
-    color: colors.primary,
-    marginBottom: 10,
-  },
-  cartWrapper: {
-    backgroundColor: colors.white,
-    padding: 10,
-    borderRadius: 5,
-  },
-});
