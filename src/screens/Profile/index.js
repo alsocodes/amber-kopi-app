@@ -63,9 +63,15 @@ const Akun = ({navigation}) => {
   const dispatch = useDispatch();
   const {version} = useSelector(state => state.app);
   const [showModal, setShowModal] = useState(false);
+  const [showInfoVersion, setShowInforVersion] = useState(false);
+
+  console.log('profile', profile?.bank);
 
   useEffect(() => {
-    setShowModal(true);
+    if (showInfoVersion) {
+      setShowModal(true);
+      setShowInforVersion(false);
+    }
   }, [version]);
 
   useEffect(() => {
@@ -120,6 +126,7 @@ const Akun = ({navigation}) => {
   };
 
   const onCheckPress = () => {
+    setShowInforVersion(true);
     dispatch(checkVersion());
   };
 
@@ -499,6 +506,9 @@ const ModalProfile = ({profile, action, show, setShow, isLoading}) => {
   const [name, setName] = useState(profile?.name || '');
   const [email, setEmail] = useState(profile?.email || '');
   const [phone, setPhone] = useState(profile?.phone || '');
+  const [bank, setBank] = useState(profile?.bank || '');
+  const [bankAccount, setBankAccount] = useState(profile?.bankAccount || '');
+  const [bankName, setBankName] = useState(profile?.bankName || '');
   const [password, setPassword] = useState('');
 
   const [showPassword, setShowPassword] = useState(false);
@@ -507,6 +517,9 @@ const ModalProfile = ({profile, action, show, setShow, isLoading}) => {
     setName(profile?.name);
     setEmail(profile?.email);
     setPhone(profile?.phone);
+    setBank(profile?.bank);
+    setBankAccount(profile?.bankAccount);
+    setBankName(profile?.bankName);
   }, [profile]);
 
   const toast = useToast();
@@ -522,6 +535,11 @@ const ModalProfile = ({profile, action, show, setShow, isLoading}) => {
     if (name === '') return toastError('Nama harus diisi');
     if (email === '') return toastError('Email harus diisi');
     if (phone === '') return toastError('No HP/WA harus diisi');
+    if (profile?.isReseller) {
+      if (bank === '') return toastError('Bank harus diisi');
+      if (bankAccount === '') return toastError('No Rekening harus diisi');
+      if (bankName === '') return toastError('Rek Atas Nama harus diisi');
+    }
     if (password !== '' && password.length < 6)
       return toastError('Password minimal 6 karakter');
 
@@ -530,6 +548,9 @@ const ModalProfile = ({profile, action, show, setShow, isLoading}) => {
       name: name,
       email: email,
       phone: phone,
+      bank: bank,
+      bankAccount: bankAccount,
+      bankName: bankName,
     };
     if (password !== '') params['password'] = password;
     console.log(params);
@@ -586,6 +607,40 @@ const ModalProfile = ({profile, action, show, setShow, isLoading}) => {
                 }
               />
             </FormControl>
+            {profile?.isReseller && (
+              <>
+                <FormControl flex={1}>
+                  <FormControl.Label>Nomor Rekening</FormControl.Label>
+                  <Input
+                    type="text"
+                    defaultValue={profile?.bankAccount}
+                    placeholder="623671001"
+                    keyboardType="number-pad"
+                    onChangeText={value => setBankAccount(value)}
+                  />
+                </FormControl>
+                <FormControl flex={1}>
+                  <FormControl.Label>Atas Nama Rekening</FormControl.Label>
+                  <Input
+                    type="text"
+                    defaultValue={profile?.bankName}
+                    placeholder="Atas Nama Rekening"
+                    keyboardType="default"
+                    onChangeText={value => setBankName(value)}
+                  />
+                </FormControl>
+                <FormControl flex={1}>
+                  <FormControl.Label>Bank</FormControl.Label>
+                  <Input
+                    type="text"
+                    defaultValue={profile?.bank}
+                    placeholder="Nama Bank"
+                    keyboardType="default"
+                    onChangeText={value => setBank(value)}
+                  />
+                </FormControl>
+              </>
+            )}
           </Stack>
         </Modal.Body>
         <Modal.Footer>
